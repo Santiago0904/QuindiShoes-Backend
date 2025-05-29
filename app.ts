@@ -11,7 +11,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: "https://quindi-shoes-frontend-yemj.vercel.app", 
     credentials: true,
     exposedHeaders: ["x-renewed-token"], 
   }));
