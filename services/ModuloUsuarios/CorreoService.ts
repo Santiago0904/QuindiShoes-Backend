@@ -9,6 +9,7 @@ export const enviarCorreo = async (destinatario: string, token: string) => {
     },
   });
 
+  // api url
   const url = `http://localhost:5173/reiniciarContrasena?token=${token}`; 
 
   const mailOptions = {
