@@ -1,7 +1,9 @@
+// services/MetricsService.ts
 import db from '../../config/config-db';
 import { RowDataPacket } from 'mysql2';
+import { TopsRepository } from '../../repositories/ModuloMetricas/Tops';
 
-type Agrupacion = 'dia' | 'semana' | 'mes' | 'anio';
+type Agrupacion = 'dia' | 'semana' | 'mes' | 'año';
 
 export class MetricsService {
   static async getVentasPorRango(agrupacion: Agrupacion) {
@@ -17,7 +19,7 @@ export class MetricsService {
       case 'mes':
         procedimiento = 'CALL VentasMensuales()';
         break;
-      case 'anio':
+      case 'año':
         procedimiento = 'CALL VentasAnuales()';
         break;
       default:
@@ -25,6 +27,12 @@ export class MetricsService {
     }
 
     const [rows] = await db.query<RowDataPacket[][]>(procedimiento);
-    return rows[0]; // CALL devuelve un array de arrays
+    return rows[0];
+  }
+
+ static async obtenerTopProductos(tipo: 'mas' | 'menos', limite: number) {
+    const orden = tipo === 'mas' ? 'DESC' : 'ASC';
+    const topsRepository = new TopsRepository();
+    return topsRepository.getTopProductosVendidos(limite, orden);
   }
 }

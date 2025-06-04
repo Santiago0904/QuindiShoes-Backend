@@ -1,8 +1,9 @@
 import express from "express";
-import ventasPorRango from '../controllers/MetricasController';
+import MetricasController from '../controllers/MetricasController';
 
 const router = express.Router();
 
-router.get('/ventas', ventasPorRango);
+router.get('/ventas', MetricasController.ventasPorRango);
+router.get('/top-productos', MetricasController.topProductos);
 
 export default router;

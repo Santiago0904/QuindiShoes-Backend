@@ -8,6 +8,7 @@ export const guardarFactura = async (req: Request) => {
     x_respuesta,
     x_amount,
     x_currency_code,
+    x_fecha_transaccion,
     x_franchise,
     x_xextra1,
     x_xextra2,
@@ -31,14 +32,15 @@ export const guardarFactura = async (req: Request) => {
     metodo_pago,
     id_usuario,
     contenido_factura
-  ) VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?)
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
   const [result]: any = await db.query(sqlFactura, [
     x_ref_payco,
     x_transaction_id,
     x_respuesta,
-    x_amount,
+    x_amount,        
     x_currency_code,
+    x_fecha_transaccion,
     x_franchise,
     id_usuario,
     x_xextra2,
@@ -58,7 +60,7 @@ export const guardarFactura = async (req: Request) => {
     id_color,
     precio_unitario,
     fecha_pago
-  ) VALUES (?, ?, ?, ?, ?, ?, NOW())
+  ) VALUES (?, ?, ?, ?, ?, ?, ?)
 `;
 
 for (const producto of productos) {
@@ -69,6 +71,7 @@ for (const producto of productos) {
     producto.cantidad,
     producto.id_color,
     producto.precio_producto,
+    x_fecha_transaccion
   ]);
 }
 
