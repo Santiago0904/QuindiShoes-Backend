@@ -11,7 +11,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: "http://localhost:5173", // Cambia esto a tu frontend
     credentials: true,
     exposedHeaders: ["x-renewed-token"], 
   }));
@@ -42,7 +42,7 @@ import cambiarContrasenaRouter from "./routes/cambiarContrasena";
 import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
-
+ // ✅
 
 import Pagos from './routes/pago-routes';
 app.use((req, res, next) => {
@@ -96,7 +96,9 @@ app.use("/juego", juegoRoute); // ✅
 
 // pagos
 
-
+//Rutas de metricas
+import metricaRouter from "./routes/Metricas";
+app.use("/metricas", metricaRouter);
 
 // Rutas de reseñas
 import resena from "./routes/resena"; // ✅
