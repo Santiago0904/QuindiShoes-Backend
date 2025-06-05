@@ -12,6 +12,7 @@ export const guardarFactura = async (req: Request) => {
     x_franchise,
     x_xextra1,
     x_xextra2,
+    x_xextra3
   } = req.body;
 
   if (!x_xextra1 || isNaN(parseInt(x_xextra1))) {
@@ -31,8 +32,9 @@ export const guardarFactura = async (req: Request) => {
     fecha_pago,
     metodo_pago,
     id_usuario,
-    contenido_factura
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    contenido_factura,
+      descuento
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
   const [result]: any = await db.query(sqlFactura, [
     x_ref_payco,
@@ -43,7 +45,7 @@ export const guardarFactura = async (req: Request) => {
     x_fecha_transaccion,
     x_franchise,
     id_usuario,
-    x_xextra2,
+    x_xextra2
   ]);
 
   const id_factura = result.insertId; // ← obtenemos el ID generado
