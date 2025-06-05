@@ -119,6 +119,10 @@ class UsuarioService {
     // return await UsuarioRepository.agregarUsuarioTemporal(nuevoUsuarioTemporal);
     console.log("Usuario temporal creado:", nuevoUsuarioTemporal);
   }
+
+  static async obtenerRecompensaJuego(id_usuario: number) {
+    return await UsuarioRepository.obtenerRecompensaJuego(id_usuario);
+  }
 }
 
 export default UsuarioService;
