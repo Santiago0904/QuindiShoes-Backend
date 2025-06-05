@@ -11,6 +11,7 @@ export const guardarFactura = async (req: Request) => {
     x_franchise,
     x_xextra1,
     x_xextra2,
+    x_xextra3
   } = req.body;
 
   if (!x_xextra1 || isNaN(parseInt(x_xextra1))) {
@@ -28,8 +29,9 @@ export const guardarFactura = async (req: Request) => {
       moneda,
       metodo_pago,
       id_usuario,
-      contenido_factura
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      contenido_factura,
+      descuento
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   await db.query(sql, [
@@ -40,7 +42,8 @@ export const guardarFactura = async (req: Request) => {
     x_currency_code,
     x_franchise,
     id_usuario,
-    x_xextra2
+    x_xextra2,
+    x_xextra3
   ]);
 };
 

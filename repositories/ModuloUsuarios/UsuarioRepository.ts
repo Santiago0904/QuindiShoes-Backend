@@ -172,7 +172,17 @@ class UsuarioRepository {
       return rows;
       console.log("Tops obtenidos correctamente");
     }
-    
+
+
+    static async obtenerRecompensaJuego(id_usuario: number) {
+      const sql = 'CALL TraerDescuento(?)';
+      console.log("Ejecutando SQL para obtener recompensa_juego:", sql);
+      const [rows]: any = await db.execute(sql, [id_usuario]);
+      // El resultado de un CALL suele ser un array de arrays
+      return rows[0][0]?.recompensa_juego;
+    }
+
+
     static async editarResena({ resena, fecha_resena, id_usuario }: { resena: string; fecha_resena: string; id_usuario: number }) {
       await db.query(
         `UPDATE users SET resena = ?, fecha_resena = ? WHERE id_usuario = ?`,
@@ -193,6 +203,8 @@ class UsuarioRepository {
         );
         return rows;
     }
+
+
 }
 
 
