@@ -45,7 +45,8 @@ export const guardarFactura = async (req: Request) => {
     x_fecha_transaccion,
     x_franchise,
     id_usuario,
-    x_xextra2
+    x_xextra2,
+    x_xextra3,
   ]);
 
   const id_factura = result.insertId; // ← obtenemos el ID generado
