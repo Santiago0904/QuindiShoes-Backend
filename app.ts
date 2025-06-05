@@ -42,6 +42,7 @@ import cambiarContrasenaRouter from "./routes/cambiarContrasena";
 import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
+import enviarProductosAIRoute from "./routes/enviarProductosAI";
  // ✅
 
 import Pagos from './routes/pago-routes';
@@ -126,3 +127,6 @@ app.listen(PORT, () => {
 
 import usuarioRouter from "./routes/usuario";
 app.use("/usuario", usuarioRouter);
+
+// Registra la nueva ruta para enviar productos a la IA
+app.use("/enviarProductosAI", enviarProductosAIRoute);
