@@ -10,7 +10,7 @@ export const enviarCorreo = async (destinatario: string, token: string) => {
   });
 
   // api url
-  const url = `quindi-shoes-frontend-yemj.vercel.appreiniciarContrasena?token=${token}`; 
+  const url = `https://quindi-shoes-frontend-yemj.vercel.appreiniciarContrasena?token=${token}`; 
 
   const mailOptions = {
     from: '"QuindiShoes 👟" <santiagoaguirrecastano8@gmail.com>',
