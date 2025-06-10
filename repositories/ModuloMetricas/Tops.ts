@@ -14,5 +14,24 @@ export class TopsRepository {
     );
     return rows;
   }
+
+  async getProductosInactivos() {
+    const [rows]: [any[], any] = await db.query(
+      `SELECT 
+  p.id_producto,
+  p.nombre_producto,
+  p.precio_producto,
+  COALESCE(SUM(pv.stock), 0) AS stock,
+  MIN(img.url_imagen) AS url_imagen
+FROM productos p
+LEFT JOIN factura_items fi ON p.id_producto = fi.id_producto
+LEFT JOIN producto_variantes pv ON p.id_producto = pv.id_producto
+LEFT JOIN imagenes img ON p.id_producto = img.id_producto
+WHERE fi.id_producto IS NULL
+GROUP BY p.id_producto, p.nombre_producto, p.precio_producto;
+`
+    );
+    return rows;
+  }
 }
 
