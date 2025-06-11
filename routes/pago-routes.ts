@@ -1,9 +1,10 @@
 // routes/pagos.ts
 import express from "express";
 import { guardarFactura } from '../controllers/factura-controller';
+import {obtenerDomicilios} from '../controllers/domicilios-controller';
 
 const router = express.Router();
-
+router.get("/facturas/domicilios", obtenerDomicilios);
 router.post('/pagos/confirmacion', express.urlencoded({ extended: true }), async (req, res) => {
   try {
     console.log("📩 Confirmación recibida:");
