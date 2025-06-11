@@ -8,8 +8,9 @@ class PersonalizacionRepository {
 
     // Materiales
     static async addMateriales(materiales: Materiales) {
-        const sql = 'call InsertarMaterial(?);';
-        const values = [materiales.nombre_material];
+      console.log("Datos recibidos en el insert:", materiales);
+        const sql = 'call InsertarMaterial(?,?);';
+        const values = [materiales.nombre_material, materiales.material_img];
         return db.execute(sql, values);
     }
 
