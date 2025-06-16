@@ -124,3 +124,6 @@ app.listen(PORT, () => {
 
 import usuarioRouter from "./routes/usuario";
 app.use("/usuario", usuarioRouter);
+
+import resenaProductoRouter from "./routes/resenaProducto";
+app.use("/resenaProducto", resenaProductoRouter);
