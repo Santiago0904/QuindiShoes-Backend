@@ -11,7 +11,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:5173", // Cambia esto a tu frontend
+    origin: "https://quindi-shoes-frontend-yemj.vercel.app", // Cambia esto a tu frontend
     credentials: true,
     exposedHeaders: ["x-renewed-token"], 
   }));
@@ -43,6 +43,7 @@ import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
 import metricasIA from "./routes/metricasIA"
+import enviarProductosAIRoute from "./routes/enviarProductosAI";
  // ✅
 
 import Pagos from './routes/pago-routes';
@@ -128,3 +129,6 @@ app.listen(PORT, () => {
 
 import usuarioRouter from "./routes/usuario";
 app.use("/usuario", usuarioRouter);
+
+// Registra la nueva ruta para enviar productos a la IA
+app.use("/enviarProductosAI", enviarProductosAIRoute);
