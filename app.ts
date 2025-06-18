@@ -42,6 +42,7 @@ import cambiarContrasenaRouter from "./routes/cambiarContrasena";
 import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
+import metricasIA from "./routes/metricasIA"
  // ✅
 
 import Pagos from './routes/pago-routes';
@@ -99,6 +100,7 @@ app.use("/juego", juegoRoute); // ✅
 //Rutas de metricas
 import metricaRouter from "./routes/Metricas";
 app.use("/metricas", metricaRouter);
+app.use("/metricasIA", metricasIA)
 
 // Rutas de reseñas
 import resena from "./routes/resena"; // ✅
