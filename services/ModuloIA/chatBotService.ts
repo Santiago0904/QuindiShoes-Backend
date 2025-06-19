@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const CHAT_API_URL = 'http://localhost:3000/chat';  // URL de tu microservicio
+const CHAT_API_URL = 'https://iaquindishoes.onrender.com/chat';  // URL de tu microservicio
 
 export const getChatResponse = async (question: string, history: any[]) => {
   try {
