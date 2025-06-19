@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const CHAT_API_URL = 'http://127.0.0.1:8000/chat';  // URL de tu microservicio
+const CHAT_API_URL = 'http://localhost:3000/chat';  // URL de tu microservicio
 
 export const getChatResponse = async (question: string, history: any[]) => {
   try {

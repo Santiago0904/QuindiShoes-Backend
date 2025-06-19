@@ -56,6 +56,7 @@ app.use((req, res, next) => {
 
 
 app.use("/api", Pagos); 
+
 app.use(bodyParser.json());
 
 
@@ -113,6 +114,7 @@ app.use("/productoDetalle", productoDetalleRouter);
 // Variantes
 import variantesRouter from "./routes/variantes";
 app.use("/variantes", variantesRouter);
+
 
 // Puerto
 
