@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.post('/', renovarTokenMiddleware, addColor);
-router.get("/", verifyToken, renovarTokenMiddleware, obtenerColores);
+router.get("/", obtenerColores);
 router.delete("/:id", renovarTokenMiddleware, eliminarColores);
 router.put("/:id", renovarTokenMiddleware, actualizarColor);
 export default router;

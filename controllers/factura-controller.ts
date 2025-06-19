@@ -16,69 +16,75 @@ export const guardarFactura = async (req: Request) => {
     x_respuesta,
     x_amount,
     x_currency_code,
+    x_fecha_transaccion,
     x_franchise,
     x_xextra2,
     x_extra2,
+    x_xextra3
   } = req.body;
 
   // Usa x_xextra2 si existe, si no x_extra2
   const extra2 = x_xextra2 || x_extra2;
 
+  // 1. Insertar la factura y obtener su ID
   const sqlFactura = `
-    INSERT INTO facturas (
-      ref_payco,
-      transaction_id,
-      estado,
-      valor,
-      moneda,
-      metodo_pago,
-      id_usuario,
-      contenido_factura,
-      fecha_pago
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  await db.query(sqlFactura, [
-    x_ref_payco || null,
-    x_transaction_id || null,
-    x_respuesta || null,
-    x_amount || null,
-    x_currency_code || null,
-    x_franchise || null,
+  INSERT INTO facturas (
+    ref_payco,
+    transaction_id,
+    estado,
+    valor,
+    moneda,
+    fecha_pago,
+    metodo_pago,
     id_usuario,
-    extra2 || null,
-    req.body.x_fecha_transaccion || new Date() // <-- aquí la fecha
+    contenido_factura,
+      descuento
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+`;
+  const [result]: any = await db.query(sqlFactura, [
+    x_ref_payco,
+    x_transaction_id,
+    x_respuesta,
+    x_amount,        
+    x_currency_code,
+    x_fecha_transaccion,
+    x_franchise,
+    id_usuario,
+    x_xextra2,
+    x_xextra3,
   ]);
 
-  // Intentar guardar reserva, pero si falla NO afecta la factura
-  try {
-    const datosExtra = JSON.parse(extra2 || '{}');
-    const id_producto = datosExtra.id_producto;
-    const tipo = datosExtra.tipo;
-    if (id_producto && tipo === "reserva") {
-      const sqlReserva = `
-        INSERT INTO reservas (
-          id_producto,
-          id_usuario,
-          fecha_reserva,
-          estado,
-          monto,
-          notificado
-        ) VALUES (?, ?, NOW(), ?, ?, 0)
-      `;
-      await db.query(sqlReserva, [
-        id_producto,
-        id_usuario,
-        x_respuesta,
-        x_amount
-      ]);
-      console.log("Reserva guardada correctamente para el producto:", id_producto);
-    } else {
-      console.log("No es una reserva, no se guarda en la tabla reservas.");
-    }
-  } catch (err) {
-    console.error("Error al guardar reserva:", err);
-  }
+  const id_factura = result.insertId; // ← obtenemos el ID generado
+
+  // 2. Insertar los items de la factura
+  const productos = JSON.parse(x_xextra2);
+
+  const sqlItem = `
+  INSERT INTO factura_items (
+    id_factura,
+    id_producto,
+    id_talla,
+    cantidad,
+    id_color,
+    precio_unitario,
+    fecha_pago
+  ) VALUES (?, ?, ?, ?, ?, ?, ?)
+`;
+
+for (const producto of productos) {
+  await db.query(sqlItem, [
+    id_factura,
+    producto.id_producto,
+    producto.id_talla,
+    producto.cantidad,
+    producto.id_color,
+    producto.precio_producto,
+    x_fecha_transaccion
+  ]);
+}
+
+
+  console.log(`✅ Factura guardada con ID ${id_factura} y ${productos.length} items`);
 };
 
 

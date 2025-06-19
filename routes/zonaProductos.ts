@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.post('/', renovarTokenMiddleware, addZona);
-router.get("/", verifyToken, renovarTokenMiddleware, obtenerZonaProducto);
+router.get("/", obtenerZonaProducto);
 router.delete("/:id", renovarTokenMiddleware, eliminarZonaProducto);
 router.put("/:id", renovarTokenMiddleware, actualizarZonaProducto);
 export default router;

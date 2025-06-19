@@ -7,7 +7,7 @@ const router = express.Router();
 
 
 router.post('/', renovarTokenMiddleware, addMaterial);
-router.get("/", verifyToken, renovarTokenMiddleware, obtenerMateriales);
+router.get("/", obtenerMateriales);
 router.delete("/:id", renovarTokenMiddleware, eliminarMateriales);
 router.put("/:id", renovarTokenMiddleware, actualizarMaterial);
 export default router;
