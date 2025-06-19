@@ -27,8 +27,18 @@ const topProductos = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Error al obtener top productos' });
   }
 };
+const productosInactivos = async (req: Request, res: Response) => {
+  try {
+    const data = await MetricsService.obtenerProductosInactivos();
+    res.json(data);
+  } catch (error) {
+    console.error('Error al obtener productos inactivos:', error);
+    res.status(500).json({ error: 'Error al obtener productos inactivos' });
+  }
+};
 
 export default {
   ventasPorRango,
-  topProductos
+  topProductos,
+  productosInactivos
 };
