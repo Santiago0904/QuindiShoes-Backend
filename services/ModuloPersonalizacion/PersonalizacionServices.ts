@@ -12,6 +12,11 @@ class PersonalizacionServices {
         return await PersonalizacionRepository.deleteMateriales(id);
     }
 
+    static async guardarPersonalizacionColoresPorNombre(colores: string[]) {
+        console.log("Datos recibidos en guardarPersonalizacionColoresPorNombre:", colores);
+        return await PersonalizacionRepository.sumarUsoColoresPorNombre(colores);
+    }
+
     static async actualizarMaterial(material: Materiales, id: number, ) {
         return await PersonalizacionRepository.ActualizarMaterial( id, material);
     }
