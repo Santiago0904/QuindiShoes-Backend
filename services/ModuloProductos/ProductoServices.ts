@@ -1,4 +1,3 @@
-
 import ProductoRepository from '../../repositories/ModuloProductos/ProductoRepository';
 import Producto from '../../Dto/ProductoDto';
 
@@ -20,6 +19,10 @@ class ProductoServices {
 
     static async actualizarProducto(producto: Producto, id: number, ) {
         return await ProductoRepository.ActualizarProducto( producto,id);
+    }
+
+    static async actualizarReservaActiva(id_producto: number, activa: boolean) {
+        return await ProductoRepository.actualizarReservaActiva(id_producto, activa);
     }
 }
 export default ProductoServices;
