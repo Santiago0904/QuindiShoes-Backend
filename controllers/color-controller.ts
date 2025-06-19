@@ -3,7 +3,7 @@ import Colores from '../Dto/ColoresDto';
 import PersonalizacionServices from '../services/ModuloPersonalizacion/PersonalizacionServices';
 
 
-  const addColor = async (req: Request, res: Response) => {
+  const  addColor = async (req: Request, res: Response) => {
     try {
       const { nombreColor, codigoHax } = req.body;
 
@@ -19,6 +19,21 @@ import PersonalizacionServices from '../services/ModuloPersonalizacion/Personali
       return res.status(500).json({ error: 'Error interno del servidor' });
     }
   }
+
+    export const sumarUsoColoresPorNombre = async (req: Request, res: Response) => {
+    try {
+      console.log("Datos recibidos en sumarUsoColoresPorNombre:", req.body);
+      const { colores } = req.body; // colores: string[]
+      if (!Array.isArray(colores) || colores.length === 0) {
+        return res.status(400).json({ error: 'Debes enviar un array de nombres de colores' });
+      }
+      await PersonalizacionServices.guardarPersonalizacionColoresPorNombre(colores);
+      return res.status(201).json({ message: 'color_uso actualizado correctamente' });
+    } catch (error) {
+      console.error('Error al actualizar color_uso:', error);
+      return res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
 
   export const obtenerColores = async (req: Request, res: Response) => {
     try {
