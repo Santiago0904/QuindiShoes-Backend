@@ -130,3 +130,6 @@ app.use("/resenaProducto", resenaProductoRouter);
 
 import reservaRouter from "./routes/reserva";
 app.use("/reservas", reservaRouter);
+
+import recomendadosRouter from "./routes/recomendados";
+app.use("/api/recomendados", recomendadosRouter);

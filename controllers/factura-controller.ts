@@ -33,8 +33,9 @@ export const guardarFactura = async (req: Request) => {
       moneda,
       metodo_pago,
       id_usuario,
-      contenido_factura
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      contenido_factura,
+      fecha_pago
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   await db.query(sqlFactura, [
@@ -45,7 +46,8 @@ export const guardarFactura = async (req: Request) => {
     x_currency_code || null,
     x_franchise || null,
     id_usuario,
-    extra2 || null
+    extra2 || null,
+    req.body.x_fecha_transaccion || new Date() // <-- aquí la fecha
   ]);
 
   // Intentar guardar reserva, pero si falla NO afecta la factura
