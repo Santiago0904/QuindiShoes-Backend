@@ -11,7 +11,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:5173", 
+    origin: "http://localhost:5173", // Cambia esto a tu frontend
     credentials: true,
     exposedHeaders: ["x-renewed-token"], 
   }));
@@ -21,8 +21,8 @@ app.use(cors({
 
 // Middlewares
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());// Alternativa moderna (también funciona)
 
 
 // Importar rutas
@@ -42,7 +42,8 @@ import cambiarContrasenaRouter from "./routes/cambiarContrasena";
 import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
-
+import enviarProductosAIRoute from "./routes/enviarProductosAI";
+ // ✅
 
 import Pagos from './routes/pago-routes';
 app.use((req, res, next) => {
@@ -96,7 +97,9 @@ app.use("/juego", juegoRoute); // ✅
 
 // pagos
 
-
+//Rutas de metricas
+import metricaRouter from "./routes/Metricas";
+app.use("/metricas", metricaRouter);
 
 // Rutas de reseñas
 import resena from "./routes/resena"; // ✅
@@ -124,3 +127,15 @@ app.listen(PORT, () => {
 
 import usuarioRouter from "./routes/usuario";
 app.use("/usuario", usuarioRouter);
+
+// Registra la nueva ruta para enviar productos a la IA
+app.use("/enviarProductosAI", enviarProductosAIRoute);
+
+import resenaProductoRouter from "./routes/resenaProducto";
+app.use("/resenaProducto", resenaProductoRouter);
+
+import reservaRouter from "./routes/reserva";
+app.use("/reservas", reservaRouter);
+
+import recomendadosRouter from "./routes/recomendados";
+app.use("/api/recomendados", recomendadosRouter);
