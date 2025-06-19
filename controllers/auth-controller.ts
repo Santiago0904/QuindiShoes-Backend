@@ -29,7 +29,7 @@ const auth = async (req: Request, res: Response) => {
     if (login.logged) {
       const payload = {
         id: login.id,       // Incluye el ID del usuario
-        rol: login.rol,     // Puedes incluir más info si quieres
+        rol: login.rol,
       };
 
       const token = generateToken(payload, process.env.KEY_TOKEN, 5); // Expira en 5 horas (o lo que uses)

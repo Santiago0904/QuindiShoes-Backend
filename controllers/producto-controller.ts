@@ -143,6 +143,7 @@ export const obtenerDetalleProducto = async (req: Request, res: Response) => {
       colores,
       tallas,
       variantes: producto.variantes,
+      reserva_activa: producto.reserva_activa, // <-- AGREGA ESTA LÍNEA
     });
   } catch (error) {
     console.error("Error al obtener detalle del producto:", error);
