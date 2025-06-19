@@ -7,12 +7,14 @@ const actualizarMaterial = async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       const {
-        nombre_material
+        nombre_material,
+        material_img
         
       } = req.body;
   
       const material = new Materiales(
-        nombre_material
+        nombre_material,
+        material_img
       );
   
       await PersonalizacionServices.actualizarMaterial(material, id);
