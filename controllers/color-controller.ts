@@ -24,6 +24,9 @@ import PersonalizacionServices from '../services/ModuloPersonalizacion/Personali
     try {
       console.log("Datos recibidos en sumarUsoColoresPorNombre:", req.body);
       const { colores } = req.body; // colores: string[]
+      console.log("🔍 Body recibido:", req.body);
+      console.log("🔍 Tipo:", typeof req.body.colores, Array.isArray(req.body.colores));
+
       if (!Array.isArray(colores) || colores.length === 0) {
         return res.status(400).json({ error: 'Debes enviar un array de nombres de colores' });
       }

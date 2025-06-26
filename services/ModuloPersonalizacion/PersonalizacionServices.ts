@@ -56,6 +56,20 @@ class PersonalizacionServices {
     static async obtenerZonaProducto() {
         return await PersonalizacionRepository.obtenerZonaProducto();
     }
+    
+    static async guardarModeloGLB(id_usuario: number, modelo: Buffer) {
+    return PersonalizacionRepository.guardarModeloGLB(id_usuario, modelo);
+    }
+
+      static async obtenerHistorialGLB(id_usuario: number) {
+    const result = await PersonalizacionRepository.obtenerModelosPorUsuario(id_usuario);
+    console.log("Historial de modelos GLB obtenido:", result);
+    return result;
+    }
+
+    static async obtenerModeloPorId(id_modelo: number) {
+  return await PersonalizacionRepository.obtenerModeloPorId(id_modelo);
+    }
 
 }
 

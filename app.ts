@@ -43,6 +43,7 @@ import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
 import enviarProductosAIRoute from "./routes/enviarProductosAI";
+import personalizacion from "./routes/personalizacion"; // ✅
  // ✅
 
 import Pagos from './routes/pago-routes';
@@ -90,6 +91,8 @@ app.use("/buscadorProducto", buscadorProductosRouter);
 app.use(verificarCorreoRoute);
 app.use('/api', chatRoutes);
 app.use("/juego", juegoRoute); // ✅
+app.use("/personalizacion", personalizacion); // ✅
+
 
 
  // ✅
