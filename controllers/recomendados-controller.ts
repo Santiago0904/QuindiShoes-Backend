@@ -9,7 +9,7 @@ export const obtenerRecomendados = async (req: Request, res: Response) => {
   const id_usuario = Number(req.params.id_usuario);
 
   try {
-    // 1. Historial de reservas del usuario con JOIN a variantes, colores y tallas
+    // 1. Historial de reservas del usuario
     const [reservas]: any = await db.query(`
       SELECT 
         r.id_producto,
@@ -33,27 +33,13 @@ export const obtenerRecomendados = async (req: Request, res: Response) => {
     const colorPreferido: Record<string, number> = {};
     const tipoPreferido: Record<string, number> = {};
     const generoPreferido: Record<string, number> = {};
-    const variantesVistas = new Set<number>();
+    const productosVistos = new Set<number>();
 
-    interface Reserva {
-        id_producto: number;
-        id_variantes: number;
-        tipo_producto: string;
-        genero_producto: string;
-        id_color: number;
-        color: string;
-        id_talla: number;
-        talla: string;
-        fecha: string;
-    }
-
-    const reservasTyped: Reserva[] = reservas as Reserva[];
-
-    reservasTyped.forEach((h: Reserva) => {
-        variantesVistas.add(h.id_variantes);
-        if (h.color) colorPreferido[h.color] = (colorPreferido[h.color] || 0) + 1;
-        if (h.tipo_producto) tipoPreferido[h.tipo_producto] = (tipoPreferido[h.tipo_producto] || 0) + 1;
-        if (h.genero_producto) generoPreferido[h.genero_producto] = (generoPreferido[h.genero_producto] || 0) + 1;
+    reservas.forEach((h: any) => {
+      productosVistos.add(h.id_producto);
+      if (h.color) colorPreferido[h.color] = (colorPreferido[h.color] || 0) + 1;
+      if (h.tipo_producto) tipoPreferido[h.tipo_producto] = (tipoPreferido[h.tipo_producto] || 0) + 1;
+      if (h.genero_producto) generoPreferido[h.genero_producto] = (generoPreferido[h.genero_producto] || 0) + 1;
     });
 
     const color = getMostFrequent(colorPreferido);
@@ -61,7 +47,7 @@ export const obtenerRecomendados = async (req: Request, res: Response) => {
     const genero = getMostFrequent(generoPreferido);
 
     // 3. Recomienda variantes según preferencias y que no haya visto
-    const variantesVistasArr = Array.from(variantesVistas);
+    const productosVistosArr = Array.from(productosVistos);
     let where = [];
     let params: any[] = [];
     if (color) { where.push("c.color = ?"); params.push(color); }
@@ -70,45 +56,58 @@ export const obtenerRecomendados = async (req: Request, res: Response) => {
     let whereClause = where.length ? `WHERE (${where.join(" OR ")})` : "";
 
     let notInClause = "";
-    if (variantesVistasArr.length) {
+    if (productosVistosArr.length) {
       notInClause = whereClause ? " AND " : " WHERE ";
-      notInClause += `v.id_variantes NOT IN (${variantesVistasArr.map(() => "?").join(",")})`;
-      params.push(...variantesVistasArr);
+      notInClause += `p.id_producto NOT IN (${productosVistosArr.map(() => "?").join(",")})`;
+      params.push(...productosVistosArr);
     }
 
-    // Subconsulta para traer la imagen principal (la de menor id_imagen por producto)
+    // 4. Consulta agrupando por producto para evitar duplicados
     const [recomendados]: any = await db.query(`
-      SELECT DISTINCT 
-        p.*, v.id_variantes, v.id_color, c.color, v.id_talla, t.talla, v.stock,
-        (SELECT i.url_imagen FROM imagenes i WHERE i.id_producto = p.id_producto ORDER BY i.id_imagen ASC LIMIT 1) AS url_imagen
+      SELECT 
+        p.*, 
+        v.id_variantes, v.id_color, c.color, v.id_talla, t.talla, v.stock,
+        (SELECT i.url_imagen FROM imagenes i WHERE i.id_producto = p.id_producto LIMIT 1) AS url_imagen
       FROM productos p
-      JOIN producto_variantes v ON p.id_producto = v.id_producto
+      JOIN producto_variantes v ON v.id_producto = p.id_producto
       JOIN colores_producto c ON v.id_color = c.id_color
       JOIN tallas t ON v.id_talla = t.id_talla
       ${whereClause}${notInClause}
       ORDER BY RAND()
-      LIMIT 10
+      LIMIT 50
     `, params);
 
-    // 4. Si no hay historial o no hay recomendados, muestra variantes aleatorias con imagen
-    if (!reservas.length || !recomendados.length) {
+    // Filtra productos únicos por id_producto
+    const productosUnicos = [];
+    const ids = new Set();
+    for (const prod of recomendados) {
+      if (!ids.has(prod.id_producto)) {
+        productosUnicos.push(prod);
+        ids.add(prod.id_producto);
+      }
+    }
+
+    // 5. Si no hay historial o no hay recomendados, muestra productos aleatorios (sin duplicados)
+    if (!reservas.length || !productosUnicos.length) {
       const [populares]: any = await db.query(`
-        SELECT DISTINCT 
-          p.*, v.id_variantes, v.id_color, c.color, v.id_talla, t.talla, v.stock,
-          (SELECT i.url_imagen FROM imagenes i WHERE i.id_producto = p.id_producto ORDER BY i.id_imagen ASC LIMIT 1) AS url_imagen
+        SELECT 
+          p.*, 
+          v.id_variantes, v.id_color, c.color, v.id_talla, t.talla, v.stock,
+          (SELECT i.url_imagen FROM imagenes i WHERE i.id_producto = p.id_producto LIMIT 1) AS url_imagen
         FROM productos p
         JOIN producto_variantes v ON p.id_producto = v.id_producto
         JOIN colores_producto c ON v.id_color = c.id_color
         JOIN tallas t ON v.id_talla = t.id_talla
+        GROUP BY p.id_producto
         ORDER BY RAND()
         LIMIT 10
       `);
       return res.json(populares);
     }
 
-    res.json(recomendados);
+    return res.json(productosUnicos.slice(0, 10));
   } catch (error) {
     console.error("Error en recomendaciones:", error);
-    res.status(500).json({ error: "Error al obtener recomendaciones" });
+    return res.status(500).json({ error: "Error al obtener recomendaciones" });
   }
 };
