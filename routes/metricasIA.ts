@@ -1,6 +1,7 @@
 import express from "express";
-import { predecirVentasHandler } from "../controllers/MetricasIA-controller";
+import { obtenerPrediccionVentas } from "../controllers/MetricasIA-controller";
+import db from "../config/config-db";
 
 const router = express.Router();
-router.post("/metricas/prediccion", predecirVentasHandler);
+router.get("/prediccion", obtenerPrediccionVentas);
 export default router;

@@ -11,7 +11,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "https://quindi-shoes-frontend-yemj.vercel.app", // Cambia esto a tu frontend
+    origin: "http://localhost:5173", // Cambia esto a tu frontend
     credentials: true,
     exposedHeaders: ["x-renewed-token"], 
   }));
@@ -101,7 +101,7 @@ app.use("/juego", juegoRoute); // ✅
 //Rutas de metricas
 import metricaRouter from "./routes/Metricas";
 app.use("/metricas", metricaRouter);
-app.use("/metricasIA", metricasIA)
+app.use("/metricasIA/metricas", metricasIA)
 
 // Rutas de reseñas
 import resena from "./routes/resena"; // ✅

@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
-import { obtenerPrediccionVentas } from "../services/ModuloIA/MetricasIA"; // Asumiendo arquitectura con servicios
+import { predecirVentasDesdeDBService } from "../services/ModuloIA/MetricasIA";
 
-export const predecirVentasHandler = async (req: Request, res: Response) => {
+export const obtenerPrediccionVentas = async (req: Request, res: Response) => {
+  const agrupacion = req.query.agrupacion as 'dia' | 'mes' | 'año' || 'dia';
+
   try {
-    const ventas = req.body.ventas;
-    const resultado = await obtenerPrediccionVentas(ventas);
+    const resultado = await predecirVentasDesdeDBService(agrupacion);
     res.json(resultado);
   } catch (error) {
-    console.error("Error al obtener predicción:", error);
-    res.status(500).json({ error: "Error al predecir ventas" });
+    console.error("Error en controlador de predicción:", error);
+    res.status(500).json({ error: "Error interno al obtener predicción" });
   }
 };
