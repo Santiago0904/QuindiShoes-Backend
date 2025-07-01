@@ -7,8 +7,8 @@ const actualizarEmpleado = async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       const {
-        nombres,
-        apellidos,
+        nombre,
+        apellido,
         telefono,
         direccion,
         correo,
@@ -17,8 +17,8 @@ const actualizarEmpleado = async (req: Request, res: Response) => {
       } = req.body;
   
       const usuario = new Usuario(
-        nombres ?? null,
-        apellidos ?? null,
+        nombre ?? null,
+        apellido ?? null,
         telefono ?? null,
         direccion ?? null,
         correo ?? null,
