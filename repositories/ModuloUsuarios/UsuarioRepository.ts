@@ -154,15 +154,20 @@ class UsuarioRepository {
       await db.execute(sql, values);
     }
 
-    static async guardarPuntuacion(usuarioId: number, puntuacion: number) {
-      console.log("Guardando puntuación:", usuarioId, puntuacion);
-      const sql = 'CALL GuardarPuntuacion(?, ?)';
-      console.log("SQL:", sql);
-      const values = [usuarioId, puntuacion];
-      console.log("Valores:", values);
+  static async guardarPuntuacion(usuarioId: number, puntuacion: number) {
+    console.log("Guardando puntuación:", usuarioId, puntuacion);
+    const sql = 'CALL GuardarPuntuacion(?, ?)';
+    console.log("SQL:", sql);
+    const values = [usuarioId, puntuacion];
+    console.log("Valores:", values);
+    try {
       await db.execute(sql, values);
       console.log("Puntuación guardada correctamente");
+    } catch (error) {
+      console.error("Error al guardar puntuación:", error);
+      throw error; // para que el controller también lo capture
     }
+  }
 
     static async ObtenerTops() {
       const sql = 'CALL TraerTops()';
