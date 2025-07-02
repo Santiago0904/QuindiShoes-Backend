@@ -71,6 +71,13 @@ class PersonalizacionServices {
   return await PersonalizacionRepository.obtenerModeloPorId(id_modelo);
     }
 
+    static async obtenerTopColores() {
+        return await PersonalizacionRepository.obtenerTopColores();
+    }
+
+    static async obtenerModelos() {
+  return await PersonalizacionRepository.obtenerModelos();
+}
 }
 
 export default PersonalizacionServices;

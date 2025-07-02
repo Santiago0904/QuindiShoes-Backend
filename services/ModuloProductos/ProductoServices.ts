@@ -24,5 +24,11 @@ class ProductoServices {
     static async actualizarReservaActiva(id_producto: number, activa: boolean) {
         return await ProductoRepository.actualizarReservaActiva(id_producto, activa);
     }
+
+      static async actualizarPersonalizacionActiva(id: number | string, personalizacion_activa: number) {
+    // Asegúrate de convertir id a número si es necesario
+    return await ProductoRepository.actualizarPersonalizacionActiva(Number(id), personalizacion_activa);
+    }
+    
 }
 export default ProductoServices;

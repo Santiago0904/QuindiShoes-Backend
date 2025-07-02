@@ -117,6 +117,13 @@ class PersonalizacionRepository {
       return { message: "color_uso actualizado correctamente" };
     }
 
+    static async obtenerTopColores() {
+      const [rows] = await db.query(
+        "SELECT id_color, color, codigo_hex, color_uso as usos FROM colores ORDER BY color_uso DESC LIMIT 10"
+      );
+      return rows;
+    }
+
     // Personalizador 3D
   static async guardarModeloGLB(id_usuario: number, buffer: Buffer) {
     const sql = `
@@ -142,6 +149,13 @@ static async obtenerModeloPorId(id_modelo: number) {
   const query = "SELECT personalizacion_img FROM personalizacion WHERE id_personalizacionCalzado = ?";
   const [rows]: any = await db.execute(query, [id_modelo]);
   return rows[0]; // devuelve un solo resultado
+}
+
+static async obtenerModelos() {
+  const [rows] = await db.query(
+    "SELECT id_personalizacionCalzado as id FROM personalizacion"
+  );
+  return rows;
 }
 
 

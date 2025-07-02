@@ -62,8 +62,15 @@ static async obtenerModeloPorId(req: Request, res: Response) {
   }
 }
 
-
-
+static async obtenerModelos(req: Request, res: Response) {
+  try {
+    const modelos = await PersonalizacionServices.obtenerModelos();
+    res.json(modelos);
+  } catch (error) {
+    console.error("Error en obtenerModelos:", error); // <-- Agrega este log
+    res.status(500).json({ error: "Error al obtener modelos" });
+  }
+}
 
 }
 

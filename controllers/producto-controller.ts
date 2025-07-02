@@ -143,7 +143,8 @@ export const obtenerDetalleProducto = async (req: Request, res: Response) => {
       colores,
       tallas,
       variantes: producto.variantes,
-      reserva_activa: producto.reserva_activa, // <-- AGREGA ESTA LÍNEA
+      reserva_activa: producto.reserva_activa,
+      personalizacion_activa: producto.personalizacion_activa, // <-- asegúrate de incluir esta línea
     });
   } catch (error) {
     console.error("Error al obtener detalle del producto:", error);
@@ -164,5 +165,6 @@ export const registrarColor = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al registrar color" });
   }
 };
+
 
 export default registrarProducto;
