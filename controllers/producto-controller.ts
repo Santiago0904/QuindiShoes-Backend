@@ -164,5 +164,16 @@ export const registrarColor = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al registrar color" });
   }
 };
+export const obtenerProductosFiltrados = async (req: Request, res: Response) => {
+  try {
+    const filtros = req.query;  // ← vienen del frontend por query string
+    const productos = await ProductoServices.obtenerProductosFiltrados(filtros);
+    res.json(productos);
+  } catch (error) {
+    console.error("Error al obtener productos filtrados:", error);
+    res.status(500).json({ error: "Error al obtener productos filtrados" });
+  }
+};
+
 
 export default registrarProducto;

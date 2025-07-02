@@ -160,6 +160,139 @@ static async obtenerTallas () {
   return Object.values(productosMap);
 }
 
+static async obtenerTodosFiltrados(filtros: any) {
+  const condiciones: string[] = [];
+  const valores: any[] = [];
+
+  if (filtros.nombre) {
+    condiciones.push("p.nombre_producto LIKE ?");
+    valores.push(`%${filtros.nombre}%`);
+  }
+
+  if (filtros.genero) {
+    condiciones.push("p.genero_producto = ?");
+    valores.push(filtros.genero);
+  }
+
+  if (filtros.tipo) {
+    condiciones.push("p.tipo_producto = ?");
+    valores.push(filtros.tipo);
+  }
+
+  if (filtros.color) {
+    condiciones.push("c.color = ?");
+    valores.push(filtros.color);
+  }
+
+  if (filtros.talla) {
+    condiciones.push("t.talla = ?");
+    valores.push(filtros.talla);
+  }
+
+  if (filtros.precioMin) {
+    condiciones.push("p.precio_producto >= ?");
+    valores.push(Number(filtros.precioMin));
+  }
+
+  if (filtros.precioMax) {
+    condiciones.push("p.precio_producto <= ?");
+    valores.push(Number(filtros.precioMax));
+  }
+
+  const where = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : "";
+
+  const result = await db.query(`
+    SELECT 
+      p.id_producto,
+      p.tipo_producto,
+      p.nombre_producto,
+      p.reseña_producto,
+      p.genero_producto,
+      p.precio_producto,
+      p.reserva_activa,
+      i.url_imagen,
+      v.id_variantes,
+      v.stock,
+      t.id_talla,
+      t.talla,
+      c.id_color,
+      c.color,
+      c.codigo_hex       
+    FROM productos p
+    LEFT JOIN producto_variantes v ON p.id_producto = v.id_producto
+    LEFT JOIN tallas t ON v.id_talla = t.id_talla
+    LEFT JOIN colores_producto c ON v.id_color = c.id_color
+    LEFT JOIN imagenes i ON p.id_producto = i.id_producto
+    ${where}
+    ORDER BY p.id_producto
+  `, valores);
+
+  type ProductoRow = {
+    id_producto: number;
+    tipo_producto: string;
+    nombre_producto: string;
+    reseña_producto: string;
+    genero_producto: string;
+    precio_producto: number;
+    reserva_activa: number | boolean;
+    url_imagen: string | null;
+    id_variantes: number | null;
+    stock: number | null;
+    id_talla: number | null;
+    talla: string | null;
+    id_color: number | null;
+    color: string | null;
+    codigo_hex: string | null;
+  };
+
+  let rows: ProductoRow[] = [];
+  if (Array.isArray(result)) {
+    if (Array.isArray(result[0])) {
+      rows = result[0] as ProductoRow[];
+    } else if (result.length > 0 && typeof result[0] === 'object' && 'id_producto' in result[0]) {
+      rows = result as unknown as ProductoRow[];
+    }
+  }
+
+  const productosMap: { [key: string]: any } = {};
+
+  for (const row of rows) {
+    if (!productosMap[row.id_producto]) {
+      productosMap[row.id_producto] = {
+        id_producto: row.id_producto,
+        tipo_producto: row.tipo_producto,
+        nombre_producto: row.nombre_producto,
+        reseña_producto: row.reseña_producto,
+        genero_producto: row.genero_producto,
+        precio_producto: row.precio_producto,
+        reserva_activa: !!row.reserva_activa,
+        imagenes: [],
+        variantes: [],
+      };
+    }
+
+    if (row.url_imagen && !productosMap[row.id_producto].imagenes.includes(row.url_imagen)) {
+      productosMap[row.id_producto].imagenes.push(row.url_imagen);
+    }
+
+    if (row.id_talla && row.id_color) {
+      productosMap[row.id_producto].variantes.push({
+        id_variantes: row.id_variantes,
+        id_talla: row.id_talla,
+        talla: row.talla,
+        id_color: row.id_color,
+        color: row.color,
+        codigo_hex: row.codigo_hex,
+        stock: row.stock,
+      });
+    }
+  }
+
+  return Object.values(productosMap);
+}
+
+
+
   // Elimina el producto y sus variantes e imágenes (recomendado para integridad referencial)
 static async eliminarProducto(id: number) {
   // Elimina variantes e imágenes primero si tienes claves foráneas
