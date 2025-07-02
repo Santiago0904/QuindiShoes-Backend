@@ -117,6 +117,35 @@ class PersonalizacionRepository {
       return { message: "color_uso actualizado correctamente" };
     }
 
+    // Personalizador 3D
+  static async guardarModeloGLB(id_usuario: number, buffer: Buffer) {
+    const sql = `
+      INSERT INTO personalizacion (personalizacion_img, id_usuario)
+      VALUES (?, ?)
+    `;
+    await db.execute(sql, [buffer, id_usuario]);
+  }
+
+static async obtenerModelosPorUsuario(id_usuario: number) {
+  const query = `
+    SELECT id_personalizacionCalzado, personalizacion_img
+    FROM personalizacion
+    WHERE id_usuario = ?`;
+
+  const [rows] = await db.execute(query, [id_usuario]);
+
+  // Forzar que sea array
+  return Array.isArray(rows) ? rows : [];
+}
+
+static async obtenerModeloPorId(id_modelo: number) {
+  const query = "SELECT personalizacion_img FROM personalizacion WHERE id_personalizacionCalzado = ?";
+  const [rows]: any = await db.execute(query, [id_modelo]);
+  return rows[0]; // devuelve un solo resultado
+}
+
+
+
 }
 
 export default PersonalizacionRepository;
