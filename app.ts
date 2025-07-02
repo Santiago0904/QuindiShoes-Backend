@@ -26,6 +26,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Importar rutas
+import imagenes from "./routes/imagenesProductos"
 import register from "./routes/register";
 import auth from "./routes/auth";
 import profile from "./routes/profile";
@@ -66,7 +67,7 @@ app.use(bodyParser.json());
 
 
 
-
+app.use("/imagenes",imagenes)
 app.use("/register", register);  
 app.use("/auth", auth);
 app.use("/profile", profile);
