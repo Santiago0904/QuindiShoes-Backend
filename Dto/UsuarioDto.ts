@@ -1,33 +1,40 @@
 class Usuario {
-    private _nombres: string;
-    private _apellidos: string;
+    private _nombre: string;
+    private _apellido: string;
     private _telefono: string;
     private _direccion: string;
     private _correo: string;
     private _contraseña?: string;
     private _record: string;
-    private _rol:string
+    private _rol: string
 
     constructor(
-        nombres: string, apellidos: string, telefono: string, direccion: string, correo: string,  rol:string, record: string ,contraseña?: string,
+        nombres: string,
+        apellidos: string,
+        telefono: string,
+        direccion: string,
+        correo: string,
+        rol: string,
+        record: string,
+        contraseña?: string // ✅ los opcionales van al final
     ) {
-        this._nombres = nombres;
-        this._apellidos = apellidos;
+        this._nombre = nombres;
+        this._apellido = apellidos;
         this._telefono = telefono;
         this._direccion = direccion;
         this._correo = correo;
-        this._contraseña = contraseña;
         this._rol = rol;
         this._record = record;
+        this._contraseña = contraseña;
     }
 
     // Getters
     get nombres(): string {
-        return this._nombres;
+        return this._nombre;
     }
 
     get apellidos(): string {
-        return this._apellidos;
+        return this._apellido;
     }
 
     get telefono(): string {
@@ -45,7 +52,7 @@ class Usuario {
     get contraseña(): string | undefined {
         return this._contraseña;
     }
-      
+
     get record(): string {
         return this._record;
     }
@@ -58,10 +65,10 @@ class Usuario {
 
     // Setters
     set nombres(nombres: string) {
-        this._nombres = nombres;
+        this._nombre = nombres;
     }
     set apellidos(apellidos: string) {
-        this._apellidos = apellidos;
+        this._apellido = apellidos;
     }
     set telefono(telefono: string) {
         this._telefono = telefono;

@@ -5,46 +5,86 @@ class BusquedaRepository {
   static async buscarProductosConFiltros(filtros: any) {
     const {
       nombre,
-      categoria,
+      tipo,
       precioMin,
       precioMax,
-      marca,
       color,
-      sexo,
+      genero,
       talla,
-      tipo
     } = filtros;
 
-    let sqlObj = { sql: "SELECT * FROM productoReal WHERE 1=1" };
-    const values: any[] = [];
+    let sql = `
+  SELECT 
+    p.id_producto,
+    p.nombre_producto,
+    p.tipo_producto,
+    p.genero_producto,
+    p.precio_producto,
+    (SELECT i.url_imagen FROM imagenes i WHERE i.id_producto = p.id_producto LIMIT 1) AS url_imagen
+  FROM productos p
+  WHERE 1=1
+`;
 
-    // Utilidad para agregar condiciones dinámicamente
-    function agregarFiltro(campo: any, condicion: string, isLike: boolean = false) {
-      if (campo !== undefined && campo !== null && campo !== "") {
-        sqlObj.sql += condicion;
-        values.push(isLike ? `%${campo}%` : campo);
-      }
-    }
+const values: any[] = [];
 
-    // Aplicamos cada filtro con su respectiva condición
-    agregarFiltro(nombre, " AND nombre_producto LIKE ?", true);
-    agregarFiltro(categoria, " AND categoria_producto = ?");
-    agregarFiltro(precioMin, " AND precio_producto >= ?");
-    agregarFiltro(precioMax, " AND precio_producto <= ?");
-    agregarFiltro(marca, " AND marca_producto = ?");
-    agregarFiltro(color, " AND colores_producto = ?");
-    agregarFiltro(sexo, " AND sexo_producto = ?");
-    agregarFiltro(talla, " AND tallas_producto = ?");
-    agregarFiltro(tipo, " AND tipo_producto = ?");
+if (nombre) {
+  sql += " AND p.nombre_producto LIKE ?";
+  values.push(`%${nombre}%`);
+}
+if (tipo) {
+  sql += " AND p.tipo_producto = ?";
+  values.push(tipo);
+}
+if (precioMin) {
+  sql += " AND p.precio_producto >= ?";
+  values.push(precioMin);
+}
+if (precioMax) {
+  sql += " AND p.precio_producto <= ?";
+  values.push(precioMax);
+}
+if (genero) {
+  sql += " AND p.genero_producto = ?";
+  values.push(genero);
+}
 
-    const [rows] = await db.execute<RowDataPacket[]>(sqlObj.sql, values);
+// Filtro por COLOR en variantes
+if (color) {
+  sql += `
+    AND EXISTS (
+      SELECT 1 FROM producto_variantes pv
+      JOIN colores_producto cp ON pv.id_color = cp.id_color
+      WHERE pv.id_producto = p.id_producto AND cp.color = ?
+    )
+  `;
+  values.push(color);
+}
+
+// Filtro por TALLA en variantes
+if (talla) {
+  sql += `
+    AND EXISTS (
+      SELECT 1 FROM producto_variantes pv
+      JOIN tallas t ON pv.id_talla = t.id_talla
+      WHERE pv.id_producto = p.id_producto AND t.talla = ?
+    )
+  `;
+  values.push(talla);
+}
+
+sql += " ORDER BY p.nombre_producto ASC";
+
+    const [rows] = await db.execute<RowDataPacket[]>(sql, values);
     return rows;
   }
 
-  // Aqui va ir la logica de sugerencias cuando se tenga
-
   static async obtenerSugerencias(query: string) {
-    const sql = `SELECT nombre_producto FROM productoReal WHERE nombre_producto LIKE ? LIMIT 5`;
+    const sql = `
+      SELECT DISTINCT p.nombre_producto 
+      FROM productos p
+      WHERE p.nombre_producto LIKE ? 
+      LIMIT 5
+    `;
     const [sugerencias] = await db.execute<RowDataPacket[]>(sql, [`%${query}%`]);
     return sugerencias;
   }
