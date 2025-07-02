@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { predecirVentasDesdeDBService } from "../services/ModuloIA/MetricasIA";
 
 export const obtenerPrediccionVentas = async (req: Request, res: Response) => {
-  const agrupacion = req.query.agrupacion as 'dia' | 'mes' | 'año' || 'dia';
+  const agrupacion = req.query.agrupacion as 'dia' | 'semana' | 'mes' | 'año' || 'dia';
 
   try {
     const resultado = await predecirVentasDesdeDBService(agrupacion);
