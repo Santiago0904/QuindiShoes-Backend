@@ -21,8 +21,8 @@ app.use(cors({
 
 // Middlewares
 
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());// Alternativa moderna (también funciona)
 
 
 // Importar rutas
@@ -57,6 +57,7 @@ app.use((req, res, next) => {
 
 
 app.use("/api", Pagos); 
+
 app.use(bodyParser.json());
 
 
@@ -116,6 +117,7 @@ app.use("/productoDetalle", productoDetalleRouter);
 import variantesRouter from "./routes/variantes";
 app.use("/variantes", variantesRouter);
 
+
 // Puerto
 
 const PORT = process.env.PORT || 3000;
@@ -132,3 +134,12 @@ app.use("/usuario", usuarioRouter);
 
 // Registra la nueva ruta para enviar productos a la IA
 app.use("/enviarProductosAI", enviarProductosAIRoute);
+
+import resenaProductoRouter from "./routes/resenaProducto";
+app.use("/resenaProducto", resenaProductoRouter);
+
+import reservaRouter from "./routes/reserva";
+app.use("/reservas", reservaRouter);
+
+import recomendadosRouter from "./routes/recomendados";
+app.use("/api/recomendados", recomendadosRouter);

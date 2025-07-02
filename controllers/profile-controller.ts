@@ -17,7 +17,10 @@ const obtenerInfoUsuario = async (req: Request, res: Response) => {
     const usuario = await UsuarioService.obtenerInfoUsuario(idUsuario);
     
     // Aseguramos que se retorna solo una vez
-    return res.status(200).json(usuario);
+    return res.status(200).json({
+      id_usuario: idUsuario, // <-- agrega esto
+      ...usuario
+    });
 
   } catch (error) {
     console.error("Error al obtener información del usuario:", error);

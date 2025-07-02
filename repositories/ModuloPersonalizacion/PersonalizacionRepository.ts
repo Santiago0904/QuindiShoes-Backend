@@ -8,8 +8,9 @@ class PersonalizacionRepository {
 
     // Materiales
     static async addMateriales(materiales: Materiales) {
-        const sql = 'call InsertarMaterial(?);';
-        const values = [materiales.nombre_material];
+      console.log("Datos recibidos en el insert:", materiales);
+        const sql = 'call InsertarMaterial(?,?);';
+        const values = [materiales.nombre_material, materiales.material_img];
         return db.execute(sql, values);
     }
 
@@ -25,7 +26,8 @@ class PersonalizacionRepository {
         ];
         return await db.execute(sql, values);
       }
-    
+
+      
 
       static async obtenerMaterial() {
           const [rows] = await db.execute('SELECT * FROM materiales');
@@ -103,6 +105,16 @@ class PersonalizacionRepository {
     static async deleteZonaProducto(id: number) {
         const sql = 'call EliminarZonaProductos(?);';
         await db.execute(sql, [id]);
+    }
+
+    static async sumarUsoColoresPorNombre(nombres: string[]) {
+      for (const nombre of nombres) {
+        // Suma 1 a color_uso donde el nombre coincida
+        console.log("Actualizando color_uso para el color:", nombre);
+        const sql = 'UPDATE colores SET color_uso = color_uso + 1 WHERE nombre_color = ?;';
+        await db.execute(sql, [nombre]);
+      }
+      return { message: "color_uso actualizado correctamente" };
     }
 
 }

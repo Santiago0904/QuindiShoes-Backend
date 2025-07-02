@@ -2,6 +2,14 @@ import db from '../config/config-db';
 import { Request, Response } from "express";
 
 export const guardarFactura = async (req: Request) => {
+  console.log("Datos recibidos en guardarFactura:", req.body);
+
+  // Usa x_xextra1 si existe, si no x_extra1
+  const id_usuario = parseInt(req.body.x_xextra1 || req.body.x_extra1);
+  if (!id_usuario || isNaN(id_usuario)) {
+    throw new Error(`id_usuario no válido: ${req.body.x_xextra1 || req.body.x_extra1}`);
+  }
+
   const {
     x_ref_payco,
     x_transaction_id,
@@ -10,16 +18,14 @@ export const guardarFactura = async (req: Request) => {
     x_currency_code,
     x_fecha_transaccion,
     x_franchise,
-    x_xextra1,
     x_xextra2,
-    x_xextra3
+    x_extra2,
+    x_xextra3,
+    x_xextra4
   } = req.body;
 
-  if (!x_xextra1 || isNaN(parseInt(x_xextra1))) {
-    throw new Error(`id_usuario no válido: ${x_xextra1}`);
-  }
-
-  const id_usuario = parseInt(x_xextra1);
+  // Usa x_xextra2 si existe, si no x_extra2
+  const extra2 = x_xextra2 || x_extra2;
 
   // 1. Insertar la factura y obtener su ID
   const sqlFactura = `
@@ -33,13 +39,14 @@ export const guardarFactura = async (req: Request) => {
     metodo_pago,
     id_usuario,
     contenido_factura,
-      descuento
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    descuento,
+    metodo_entrega
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
   const [result]: any = await db.query(sqlFactura, [
     x_ref_payco,
     x_transaction_id,
-    x_respuesta,
+    x_respuesta,    
     x_amount,        
     x_currency_code,
     x_fecha_transaccion,
@@ -47,6 +54,7 @@ export const guardarFactura = async (req: Request) => {
     id_usuario,
     x_xextra2,
     x_xextra3,
+    x_xextra4,
   ]);
 
   const id_factura = result.insertId; // ← obtenemos el ID generado

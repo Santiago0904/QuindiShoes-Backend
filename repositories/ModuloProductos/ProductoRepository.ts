@@ -72,6 +72,7 @@ static async obtenerTallas () {
       p.reseña_producto,
       p.genero_producto,
       p.precio_producto,
+      p.reserva_activa, -- <--- ASEGÚRATE DE INCLUIR ESTA LÍNEA
       i.url_imagen,
       v.id_variantes,
       v.stock,
@@ -95,6 +96,7 @@ static async obtenerTallas () {
     reseña_producto: string;
     genero_producto: string;
     precio_producto: number;
+    reserva_activa: number | boolean; // Added this line to match the SQL SELECT
     url_imagen: string | null;
     id_variantes: number | null;
     stock: number | null;
@@ -129,6 +131,7 @@ static async obtenerTallas () {
         reseña_producto: row.reseña_producto,
         genero_producto: row.genero_producto,
         precio_producto: row.precio_producto,
+        reserva_activa: !!row.reserva_activa, // <-- Convierte 1/0 a true/false
         imagenes: [],
         variantes: [],
       };
@@ -221,6 +224,11 @@ static async eliminarVariante(id_variante: number) {
     `DELETE FROM producto_variantes WHERE id_variantes = ?`,
     [id_variante]
   );
+}
+
+static async actualizarReservaActiva(id_producto: number, activa: boolean) {
+  const sql = 'UPDATE productos SET reserva_activa = ? WHERE id_producto = ?';
+  await db.execute(sql, [activa ? 1 : 0, id_producto]); // <-- Guarda como 1 o 0
 }
 }
 
