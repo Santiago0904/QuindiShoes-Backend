@@ -57,6 +57,7 @@ app.use((req, res, next) => {
 
 
 app.use("/api", Pagos); 
+
 app.use(bodyParser.json());
 
 
@@ -117,6 +118,7 @@ app.use("/productoDetalle", productoDetalleRouter);
 import variantesRouter from "./routes/variantes";
 app.use("/variantes", variantesRouter);
 
+
 // Puerto
 
 const PORT = process.env.PORT || 3000;
@@ -141,4 +143,17 @@ import reservaRouter from "./routes/reserva";
 app.use("/reservas", reservaRouter);
 
 import recomendadosRouter from "./routes/recomendados";
+import { Request, Response, NextFunction } from "express";
 app.use("/api/recomendados", recomendadosRouter);
+
+// Manejo de errores
+interface ErrorWithStatus extends Error {
+  status?: number;
+}
+
+app.use((err: ErrorWithStatus, req: Request, res: Response, next: NextFunction) => {
+  console.error("Error no controlado:", err);
+  if (!res.headersSent) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});
