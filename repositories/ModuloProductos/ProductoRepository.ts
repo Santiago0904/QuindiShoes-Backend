@@ -73,6 +73,7 @@ static async obtenerTallas () {
       p.genero_producto,
       p.precio_producto,
       p.reserva_activa, -- <--- ASEGÚRATE DE INCLUIR ESTA LÍNEA
+      p.personalizacion_activa,
       i.url_imagen,
       v.id_variantes,
       v.stock,
@@ -97,6 +98,7 @@ static async obtenerTallas () {
     genero_producto: string;
     precio_producto: number;
     reserva_activa: number | boolean; // Added this line to match the SQL SELECT
+    personalizacion_activa: number | boolean; // <-- Added this line
     url_imagen: string | null;
     id_variantes: number | null;
     stock: number | null;
@@ -132,6 +134,7 @@ static async obtenerTallas () {
         genero_producto: row.genero_producto,
         precio_producto: row.precio_producto,
         reserva_activa: !!row.reserva_activa, // <-- Convierte 1/0 a true/false
+        personalizacion_activa: Number(row.personalizacion_activa), // <-- fuerza a número
         imagenes: [],
         variantes: [],
       };
@@ -395,6 +398,13 @@ static async actualizarReservaActiva(id_producto: number, activa: boolean) {
   const sql = 'UPDATE productos SET reserva_activa = ? WHERE id_producto = ?';
   await db.execute(sql, [activa ? 1 : 0, id_producto]); // <-- Guarda como 1 o 0
 }
+
+
+static async actualizarPersonalizacionActiva(id: number, personalizacion_activa: number) {
+  const sql = 'UPDATE productos SET personalizacion_activa = ? WHERE id_producto = ?';
+  await db.execute(sql, [personalizacion_activa, id]);
+}
+
 }
 
 export default ProductoRepository;

@@ -209,6 +209,12 @@ class UsuarioRepository {
         return rows;
     }
 
+    static async actualizarDatosUsuario(id: number, datos: { nombre: string, apellido: string, telefono: string, direccion: string, correo: string }) {
+      const sql = `UPDATE users SET nombre = ?, apellido = ?, telefono = ?, direccion = ?, correo = ? WHERE id_usuario = ?`;
+      const values = [datos.nombre, datos.apellido, datos.telefono, datos.direccion, datos.correo, id];
+      await db.execute(sql, values);
+    } 
+
 
 }
 

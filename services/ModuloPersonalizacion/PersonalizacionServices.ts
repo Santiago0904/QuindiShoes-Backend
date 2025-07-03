@@ -68,9 +68,22 @@ class PersonalizacionServices {
     }
 
     static async obtenerModeloPorId(id_modelo: number) {
-  return await PersonalizacionRepository.obtenerModeloPorId(id_modelo);
+  const modelo = await PersonalizacionRepository.obtenerModeloPorId(id_modelo);
+  if (modelo) {
+    console.log("Service - Buffer length:", modelo.personalizacion_img?.length);
+  } else {
+    console.log("Service - Modelo no encontrado");
+  }
+  return modelo;
+}
+
+    static async obtenerTopColores() {
+        return await PersonalizacionRepository.obtenerTopColores();
     }
 
+    static async obtenerModelos() {
+  return await PersonalizacionRepository.obtenerModelos();
+}
 }
 
 export default PersonalizacionServices;

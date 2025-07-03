@@ -143,7 +143,8 @@
         colores,
         tallas,
         variantes: producto.variantes,
-        reserva_activa: producto.reserva_activa, // <-- AGREGA ESTA LÍNEA
+        reserva_activa: producto.reserva_activa,
+      personalizacion_activa: producto.personalizacion_activa, // <-- asegúrate de incluir esta línea
       });
     } catch (error) {
       console.error("Error al obtener detalle del producto:", error);
@@ -164,6 +165,7 @@
       res.status(500).json({ error: "Error al registrar color" });
     }
   };
+
   export const obtenerProductosFiltrados = async (req: Request, res: Response) => {
     try {
       const filtros = req.query;  // ← vienen del frontend por query string

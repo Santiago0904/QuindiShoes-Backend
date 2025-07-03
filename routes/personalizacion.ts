@@ -17,7 +17,6 @@ router.get(
 );
 
 router.get("/modelo/:id", PersonalizacionController.obtenerModeloPorId);
-
-
+router.get("/modelos", PersonalizacionController.obtenerModelos);
 
 export default router;

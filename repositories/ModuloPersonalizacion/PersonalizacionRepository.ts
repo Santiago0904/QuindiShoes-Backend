@@ -117,6 +117,13 @@ class PersonalizacionRepository {
       return { message: "color_uso actualizado correctamente" };
     }
 
+    static async obtenerTopColores() {
+      const [rows] = await db.query(
+        "SELECT id_color, nombre_color, codigo_hax, color_uso as usos FROM colores ORDER BY color_uso DESC LIMIT 10"
+      );
+      return rows;
+    }
+
     // Personalizador 3D
   static async guardarModeloGLB(id_usuario: number, buffer: Buffer) {
     const sql = `
@@ -128,7 +135,7 @@ class PersonalizacionRepository {
 
 static async obtenerModelosPorUsuario(id_usuario: number) {
   const query = `
-    SELECT id_personalizacionCalzado, personalizacion_img
+    SELECT id_personalizacionCalzado, personalizacion_img, fecha
     FROM personalizacion
     WHERE id_usuario = ?`;
 
@@ -141,7 +148,25 @@ static async obtenerModelosPorUsuario(id_usuario: number) {
 static async obtenerModeloPorId(id_modelo: number) {
   const query = "SELECT personalizacion_img FROM personalizacion WHERE id_personalizacionCalzado = ?";
   const [rows]: any = await db.execute(query, [id_modelo]);
-  return rows[0]; // devuelve un solo resultado
+  if (rows[0]) {
+    console.log("Repository - Buffer length:", rows[0].personalizacion_img?.length);
+  } else {
+    console.log("Repository - Modelo no encontrado");
+  }
+  return rows[0];
+}
+
+static async obtenerModelos() {
+  const [rows] = await db.query(
+    `SELECT 
+        p.id_personalizacionCalzado as id, 
+        p.fecha, 
+        p.id_usuario, 
+        u.nombre as nombre_usuario
+     FROM personalizacion p
+     JOIN users u ON p.id_usuario = u.id_usuario`
+  );
+  return rows;
 }
 
 

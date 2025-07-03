@@ -61,4 +61,23 @@ export const actualizarReservaActiva = async (
   }
 };
 
+// ejemplo de controlador
+export const actualizarPersonalizacionActiva = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id; // <-- debe existir
+    const { personalizacion_activa } = req.body; // <-- debe existir
+
+    if (typeof personalizacion_activa === "undefined" || !id) {
+      return res.status(400).json({ error: "Faltan datos" });
+    }
+
+    // Llama a tu repositorio aquí
+    await ProductoServices.actualizarPersonalizacionActiva(id, personalizacion_activa);
+
+    res.json({ message: "Personalización actualizada correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar personalización" });
+  }
+};
+
 export default actualizarProducto;
