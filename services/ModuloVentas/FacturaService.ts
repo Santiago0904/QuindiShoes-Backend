@@ -1,11 +1,7 @@
-// import Factura from "../../Dto/FacturaDto";
-// import FacturaRepository from "../../repositories/ModuloVentas/FacturaRepository";
+import FacturaRepository from "../../repositories/ModuloVentas/FacturaRepository";
 
-// class FacturaService{
-
-    
-//     static async addFactura(Factura: Factura){
-//         return await FacturaRepository.addFactura(Factura)
-//     }
-
-// }
+export default class FacturaService {
+  static async obtenerFacturasDomicilio() {
+    return await FacturaRepository.obtenerFacturasDomicilio();
+  }
+}
