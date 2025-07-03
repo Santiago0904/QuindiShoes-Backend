@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import ProductoRepository from "../repositories/ModuloProductos/ProductoRepository";
 
+
 // Obtener todas las variantes de un producto
 export const obtenerVariantesPorProducto = async (req: Request, res: Response) => {
   try {

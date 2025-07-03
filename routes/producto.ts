@@ -5,6 +5,7 @@ import  actualizarProducto, { actualizarReservaActiva }  from "../controllers/ac
 import { actualizarPersonalizacionActiva } from "../controllers/actualizar-producto-controller";
 import { obtenerFacturas } from "../controllers/factura-controller";
 import {renovarTokenMiddleware, verifyToken }from "../controllers/renovar-token-controller";
+import { obtenerProductosFiltrados } from "../controllers/producto-controller";
 import bodyParser from 'body-parser';
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.put<{ id: string }>('/:id/reserva', renovarTokenMiddleware, actualizarRes
 router.put('/:id/personalizacion', renovarTokenMiddleware, actualizarPersonalizacionActiva);
 router.get("/public", obtenerProductos);
 
+router.get('/filtrados', obtenerProductosFiltrados);
 
 router.get('/facturas', obtenerFacturas);
 

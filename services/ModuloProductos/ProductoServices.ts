@@ -30,5 +30,9 @@ class ProductoServices {
     return await ProductoRepository.actualizarPersonalizacionActiva(Number(id), personalizacion_activa);
     }
     
+    static async obtenerProductosFiltrados(filtros: any) {
+  return await ProductoRepository.obtenerTodosFiltrados(filtros);
+}
+
 }
 export default ProductoServices;
