@@ -158,7 +158,13 @@ static async obtenerModeloPorId(id_modelo: number) {
 
 static async obtenerModelos() {
   const [rows] = await db.query(
-    "SELECT id_personalizacionCalzado as id, fecha FROM personalizacion"
+    `SELECT 
+        p.id_personalizacionCalzado as id, 
+        p.fecha, 
+        p.id_usuario, 
+        u.nombre as nombre_usuario
+     FROM personalizacion p
+     JOIN users u ON p.id_usuario = u.id_usuario`
   );
   return rows;
 }
