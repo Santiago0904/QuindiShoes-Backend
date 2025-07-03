@@ -42,7 +42,9 @@ import cambiarContrasenaRouter from "./routes/cambiarContrasena";
 import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
+import metricasIA from "./routes/metricasIA"
 import enviarProductosAIRoute from "./routes/enviarProductosAI";
+import personalizacion from "./routes/personalizacion"; // ✅
  // ✅
 
 import Pagos from './routes/pago-routes';
@@ -62,7 +64,6 @@ app.use(bodyParser.json());
 
 // import producto from "./routes/producto";
 // Usar rutas
-
 
 
 
@@ -91,6 +92,8 @@ app.use("/buscadorProducto", buscadorProductosRouter);
 app.use(verificarCorreoRoute);
 app.use('/api', chatRoutes);
 app.use("/juego", juegoRoute); // ✅
+app.use("/personalizacion", personalizacion); // ✅
+
 
 
  // ✅
@@ -101,6 +104,7 @@ app.use("/juego", juegoRoute); // ✅
 //Rutas de metricas
 import metricaRouter from "./routes/Metricas";
 app.use("/metricas", metricaRouter);
+app.use("/metricasIA/metricas", metricasIA)
 
 // Rutas de reseñas
 import resena from "./routes/resena"; // ✅

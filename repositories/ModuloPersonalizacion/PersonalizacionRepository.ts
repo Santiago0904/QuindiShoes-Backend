@@ -8,8 +8,9 @@ class PersonalizacionRepository {
 
     // Materiales
     static async addMateriales(materiales: Materiales) {
-        const sql = 'call InsertarMaterial(?);';
-        const values = [materiales.nombre_material];
+      console.log("Datos recibidos en el insert:", materiales);
+        const sql = 'call InsertarMaterial(?,?);';
+        const values = [materiales.nombre_material, materiales.material_img];
         return db.execute(sql, values);
     }
 
@@ -25,7 +26,8 @@ class PersonalizacionRepository {
         ];
         return await db.execute(sql, values);
       }
-    
+
+      
 
       static async obtenerMaterial() {
           const [rows] = await db.execute('SELECT * FROM materiales');
@@ -104,6 +106,70 @@ class PersonalizacionRepository {
         const sql = 'call EliminarZonaProductos(?);';
         await db.execute(sql, [id]);
     }
+
+    static async sumarUsoColoresPorNombre(nombres: string[]) {
+      for (const nombre of nombres) {
+        // Suma 1 a color_uso donde el nombre coincida
+        console.log("Actualizando color_uso para el color:", nombre);
+        const sql = 'UPDATE colores SET color_uso = color_uso + 1 WHERE nombre_color = ?;';
+        await db.execute(sql, [nombre]);
+      }
+      return { message: "color_uso actualizado correctamente" };
+    }
+
+    static async obtenerTopColores() {
+      const [rows] = await db.query(
+        "SELECT id_color, nombre_color, codigo_hax, color_uso as usos FROM colores ORDER BY color_uso DESC LIMIT 10"
+      );
+      return rows;
+    }
+
+    // Personalizador 3D
+  static async guardarModeloGLB(id_usuario: number, buffer: Buffer) {
+    const sql = `
+      INSERT INTO personalizacion (personalizacion_img, id_usuario)
+      VALUES (?, ?)
+    `;
+    await db.execute(sql, [buffer, id_usuario]);
+  }
+
+static async obtenerModelosPorUsuario(id_usuario: number) {
+  const query = `
+    SELECT id_personalizacionCalzado, personalizacion_img, fecha
+    FROM personalizacion
+    WHERE id_usuario = ?`;
+
+  const [rows] = await db.execute(query, [id_usuario]);
+
+  // Forzar que sea array
+  return Array.isArray(rows) ? rows : [];
+}
+
+static async obtenerModeloPorId(id_modelo: number) {
+  const query = "SELECT personalizacion_img FROM personalizacion WHERE id_personalizacionCalzado = ?";
+  const [rows]: any = await db.execute(query, [id_modelo]);
+  if (rows[0]) {
+    console.log("Repository - Buffer length:", rows[0].personalizacion_img?.length);
+  } else {
+    console.log("Repository - Modelo no encontrado");
+  }
+  return rows[0];
+}
+
+static async obtenerModelos() {
+  const [rows] = await db.query(
+    `SELECT 
+        p.id_personalizacionCalzado as id, 
+        p.fecha, 
+        p.id_usuario, 
+        u.nombre as nombre_usuario
+     FROM personalizacion p
+     JOIN users u ON p.id_usuario = u.id_usuario`
+  );
+  return rows;
+}
+
+
 
 }
 

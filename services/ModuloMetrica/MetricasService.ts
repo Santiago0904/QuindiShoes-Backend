@@ -35,4 +35,9 @@ export class MetricsService {
     const topsRepository = new TopsRepository();
     return topsRepository.getTopProductosVendidos(limite, orden);
   }
+
+    static async obtenerProductosInactivos() {
+    const topsRepository = new TopsRepository();
+    return topsRepository.getProductosInactivos();
+  }
 }

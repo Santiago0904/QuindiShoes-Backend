@@ -28,5 +28,15 @@ class ProductoServices {
     static async actualizarImagen(id_producto: number, nuevaUrl: string) {
     return await ProductoRepository.actualizarImagen(id_producto, nuevaUrl);
 }
+
+      static async actualizarPersonalizacionActiva(id: number | string, personalizacion_activa: number) {
+    // Asegúrate de convertir id a número si es necesario
+    return await ProductoRepository.actualizarPersonalizacionActiva(Number(id), personalizacion_activa);
+    }
+    
+    static async obtenerProductosFiltrados(filtros: any) {
+  return await ProductoRepository.obtenerTodosFiltrados(filtros);
+}
+
 }
 export default ProductoServices;
