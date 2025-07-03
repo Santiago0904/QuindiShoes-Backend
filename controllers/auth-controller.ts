@@ -32,7 +32,7 @@ const auth = async (req: Request, res: Response) => {
         rol: login.rol,
       };
 
-      const token = generateToken(payload, process.env.KEY_TOKEN, 5); // Expira en 5 horas (o lo que uses)
+      const token = generateToken(payload, process.env.KEY_TOKEN, 30); // Expira en 5 horas (o lo que uses)
 
       return res.status(200).json({
         status: login.status,
