@@ -47,8 +47,6 @@ static async obtenerColores() {
 }
 
 
- 
-
 static async obtenerTallas () {
   try {
     const result = await db.query('SELECT * FROM tallas');
@@ -226,10 +224,36 @@ static async eliminarVariante(id_variante: number) {
   );
 }
 
+
 static async actualizarReservaActiva(id_producto: number, activa: boolean) {
   const sql = 'UPDATE productos SET reserva_activa = ? WHERE id_producto = ?';
   await db.execute(sql, [activa ? 1 : 0, id_producto]); // <-- Guarda como 1 o 0
 }
+
+static async actualizarImagen(id_producto: number, nuevaUrl: string) {
+  // Verifica si ya hay una imagen asociada
+  const [rows]: any = await db.query(
+    `SELECT id_imagen FROM imagenes WHERE id_producto = ? LIMIT 1`,
+    [id_producto]
+  );
+
+  if (rows.length > 0) {
+    // Ya existe → actualizar
+    await db.query(
+      `UPDATE imagenes SET url_imagen = ? WHERE id_producto = ?`,
+      [nuevaUrl, id_producto]
+    );
+  } else {
+    // No existe → insertar
+    await db.query(
+      `INSERT INTO imagenes (id_producto, url_imagen) VALUES (?, ?)`,
+      [id_producto, nuevaUrl]
+    );
+  }
 }
+
+}
+
+
 
 export default ProductoRepository;

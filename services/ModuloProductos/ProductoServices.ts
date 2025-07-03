@@ -24,5 +24,9 @@ class ProductoServices {
     static async actualizarReservaActiva(id_producto: number, activa: boolean) {
         return await ProductoRepository.actualizarReservaActiva(id_producto, activa);
     }
+
+    static async actualizarImagen(id_producto: number, nuevaUrl: string) {
+    return await ProductoRepository.actualizarImagen(id_producto, nuevaUrl);
+}
 }
 export default ProductoServices;
