@@ -201,6 +201,23 @@ static async obtenerTodosFiltrados(filtros: any) {
 
   const where = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : "";
 
+  // 🛠 Ordenamiento validado
+  const ordenesValidas: Record<string, string> = {
+    precioAsc: 'p.precio_producto ASC',
+    precioDesc: 'p.precio_producto DESC',
+    nombreAsc: 'p.nombre_producto ASC',
+    nombreDesc: 'p.nombre_producto DESC',
+  };
+
+  const ordenSQL = ordenesValidas[filtros.ordenar] || 'p.id_producto ASC';
+
+  // 📌 Imprime la consulta final para debug
+  console.log("Consulta SQL final:", `
+    SELECT ...
+    ${where}
+    ORDER BY ${ordenSQL}
+  `);
+
   const result = await db.query(`
     SELECT 
       p.id_producto,
@@ -224,7 +241,7 @@ static async obtenerTodosFiltrados(filtros: any) {
     LEFT JOIN colores_producto c ON v.id_color = c.id_color
     LEFT JOIN imagenes i ON p.id_producto = i.id_producto
     ${where}
-    ORDER BY p.id_producto
+    ORDER BY ${ordenSQL}
   `, valores);
 
   type ProductoRow = {
@@ -287,9 +304,24 @@ static async obtenerTodosFiltrados(filtros: any) {
       });
     }
   }
+const productos = Object.values(productosMap);
+
+// Ordenar nuevamente en JS si es necesario (fallback seguro)
+if (filtros.ordenar === 'nombreAsc') {
+  productos.sort((a, b) => a.nombre_producto.localeCompare(b.nombre_producto));
+} else if (filtros.ordenar === 'nombreDesc') {
+  productos.sort((a, b) => b.nombre_producto.localeCompare(a.nombre_producto));
+} else if (filtros.ordenar === 'precioAsc') {
+  productos.sort((a, b) => a.precio_producto - b.precio_producto);
+} else if (filtros.ordenar === 'precioDesc') {
+  productos.sort((a, b) => b.precio_producto - a.precio_producto);
+}
+
+return productos;
 
   return Object.values(productosMap);
 }
+
 
 
 
