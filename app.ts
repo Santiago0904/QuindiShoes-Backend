@@ -67,7 +67,6 @@ app.use(bodyParser.json());
 
 
 
-
 app.use("/register", register);  
 app.use("/auth", auth);
 app.use("/profile", profile);
