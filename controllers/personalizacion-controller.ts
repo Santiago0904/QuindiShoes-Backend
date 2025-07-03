@@ -35,6 +35,7 @@ static async obtenerHistorialGLB(req: Request, res: Response) {
     // Solo devuelve los IDs, ya que el GLB se carga por otra ruta
     const respuesta = historial.map((item: any) => ({
       id: item.id_personalizacionCalzado,
+      fecha: item.fecha, // <-- Agrega esto
     }));
 
     return res.status(200).json(respuesta);
@@ -48,13 +49,14 @@ static async obtenerHistorialGLB(req: Request, res: Response) {
 static async obtenerModeloPorId(req: Request, res: Response) {
   try {
     const { id } = req.params;
-
     const modelo = await PersonalizacionServices.obtenerModeloPorId(Number(id));
     if (!modelo) {
+      console.log("Controller - Modelo no encontrado");
       return res.status(404).json({ message: "Modelo no encontrado." });
     }
-
+    console.log("Controller - Buffer length:", modelo.personalizacion_img?.length);
     res.setHeader("Content-Type", "model/gltf-binary");
+    res.setHeader("Content-Disposition", `inline; filename="modelo_${id}.glb"`);
     return res.send(modelo.personalizacion_img);
   } catch (error) {
     console.error("Error al obtener modelo por ID:", error);
