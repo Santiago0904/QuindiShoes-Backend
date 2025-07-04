@@ -16,7 +16,10 @@ app.use(cors({
     exposedHeaders: ["x-renewed-token"], 
   }));
   
-
+app.use((req, res, next) => {
+  res.header("Access-Control-Expose-Headers", "x-renewed-token");
+  next();
+});
   
 
 // Middlewares
