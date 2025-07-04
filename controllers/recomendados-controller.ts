@@ -90,18 +90,32 @@ export const obtenerRecomendados = async (req: Request, res: Response) => {
     // 5. Si no hay historial o no hay recomendados, muestra productos aleatorios (sin duplicados)
     if (!reservas.length || !productosUnicos.length) {
       const [populares]: any = await db.query(`
-        SELECT 
-          p.*, 
-          v.id_variantes, v.id_color, c.color, v.id_talla, t.talla, v.stock,
-          (SELECT i.url_imagen FROM imagenes i WHERE i.id_producto = p.id_producto LIMIT 1) AS url_imagen
-        FROM productos p
-        JOIN producto_variantes v ON p.id_producto = v.id_producto
-        JOIN colores_producto c ON v.id_color = c.id_color
-        JOIN tallas t ON v.id_talla = t.id_talla
-        GROUP BY p.id_producto
-        ORDER BY RAND()
-        LIMIT 10
-      `);
+  SELECT 
+  p.id_producto,
+  p.nombre_producto,
+  p.tipo_producto,
+  p.genero_producto,
+  p.precio_producto,
+  MAX(v.id_variantes) AS id_variantes,
+  MAX(v.id_color) AS id_color,
+  MAX(c.color) AS color,
+  MAX(v.id_talla) AS id_talla,
+  MAX(t.talla) AS talla,
+  MAX(v.stock) AS stock,
+  (
+    SELECT i.url_imagen 
+    FROM imagenes i 
+    WHERE i.id_producto = p.id_producto 
+    LIMIT 1
+  ) AS url_imagen
+FROM productos p
+JOIN producto_variantes v ON p.id_producto = v.id_producto
+JOIN colores_producto c ON v.id_color = c.id_color
+JOIN tallas t ON v.id_talla = t.id_talla
+GROUP BY p.id_producto
+ORDER BY RAND()
+LIMIT 10
+`);
       return res.json(populares);
     }
 

@@ -89,9 +89,9 @@ const confirmarCorreo = async (req: Request, res: Response) => {
       telefono,
       direccion,
       correo,
-      rol,         // ✅ primero el rol
-      "",          // ✅ luego el record (puede ser null o vacío)
-      contrasena   // ✅ al final la contraseña
+      rol,         // rol en su lugar correcto
+      "",          // record vacío
+      contrasena   // contraseña al final
     );
 
     console.log("Registrando usuario:", usuario);
@@ -150,9 +150,9 @@ export const verificarEstadoCorreo = async (req: Request, res: Response) => {
       payload.telefono,
       payload.direccion,
       payload.correo,
-      payload.rol,        // ✅ bien ubicado
-      "",                 // ✅ record
-      payload.contrasena  // ✅ al final
+      payload.rol,         // rol en su lugar correcto
+      "",                  // record vacío
+      payload.contrasena   // contraseña al final
     );
 
 

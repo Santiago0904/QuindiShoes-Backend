@@ -12,18 +12,25 @@ const renovarTokenMiddleware = (req: Request, res: Response, next: NextFunction)
       return res.status(401).json({ message: "Token no proporcionado" });
     }
 
-    const token = authHeader.split(" ")[1]; // Extraer el token del encabezado
-
-    // Verificar el token
+    const token = authHeader.split(" ")[1];
     const decoded = jwt.verify(token, process.env.KEY_TOKEN as string) as any;
 
-    // Generar un nuevo token
-    const nuevoToken = generateToken({ id: decoded.id }, process.env.KEY_TOKEN, 5);
+    // Mantener el mismo payload que el token original
+    let payload;
+    if (decoded.data !== undefined) {
+      payload = { data: decoded.data };
+    } else {
+      payload = decoded;
+    }
 
-    // Configurar el nuevo token en el encabezado de respuesta
+    const nuevoToken = generateToken(
+      payload,
+      process.env.KEY_TOKEN,
+      1000 * 60 * 60 // 1000 horas
+    );
+
     res.setHeader("x-renewed-token", nuevoToken);
     console.log("Nuevo token generado:", nuevoToken);
-    // Pasar a la siguiente función
     next();
   } catch (error) {
     console.error("Error al verificar o renovar token", error);

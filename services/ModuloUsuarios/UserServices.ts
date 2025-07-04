@@ -128,6 +128,13 @@ class UsuarioService {
   static async actualizarDatosUsuario(id: number, datos: { nombre: string, apellido: string, telefono: string, direccion: string, correo: string }) {
   return await UsuarioRepository.actualizarDatosUsuario(id, datos);
   }
+
+  static async obtenerEstadoDescuento(id: number) {
+    const resultado = await UsuarioRepository.obtenerEstadoDescuento(id);
+    if (!resultado) throw new Error('Usuario no encontrado');
+    return resultado.descuento_usado; // true o false
+  }
+
 }
 
 export default UsuarioService;
