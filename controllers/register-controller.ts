@@ -36,7 +36,7 @@ const register = async (req: Request, res: Response) => {
     const token = generateToken(payload, process.env.KEY_TOKEN!, 60); // Token válido por 1h
 
     // Enviar el enlace de confirmación por correo
-    const urlConfirm = `https://quindi-shoes-project.vercel.app/esperando-confirmacion?token=${token}`;
+    const urlConfirm = `https://quindi-shoes-frontend-def.vercel.app//esperando-confirmacion?token=${token}`;
     await ValidarCorreo(correo, urlConfirm);
 
     // Responder con mensaje de éxito
