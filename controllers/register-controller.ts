@@ -89,9 +89,9 @@ const confirmarCorreo = async (req: Request, res: Response) => {
       telefono,
       direccion,
       correo,
-      contrasena, // ← contraseña va ANTES que rol
-      rol,
-      ""
+      rol,         // rol en su lugar correcto
+      "",          // record vacío
+      contrasena   // contraseña al final
     );
 
     console.log("Registrando usuario:", usuario);
@@ -150,9 +150,9 @@ export const verificarEstadoCorreo = async (req: Request, res: Response) => {
       payload.telefono,
       payload.direccion,
       payload.correo,
-      payload.contrasena,
-      payload.rol,
-      ""
+      payload.rol,         // rol en su lugar correcto
+      "",                  // record vacío
+      payload.contrasena   // contraseña al final
     );
 
 
