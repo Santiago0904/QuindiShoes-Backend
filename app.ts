@@ -11,7 +11,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:5173", // Cambia esto a tu frontend
+    origin: "https://quindi-shoes-project.vercel.app", // Cambia esto a tu frontend
     credentials: true,
     exposedHeaders: ["x-renewed-token"], 
   }));
@@ -149,6 +149,9 @@ app.use("/reservas", reservaRouter);
 import recomendadosRouter from "./routes/recomendados";
 import { Request, Response, NextFunction } from "express";
 app.use("/api/recomendados", recomendadosRouter);
+
+import pagosRoutes from "./routes/pagos";
+app.use("/api/pagos", pagosRoutes);
 
 // Manejo de errores
 interface ErrorWithStatus extends Error {
