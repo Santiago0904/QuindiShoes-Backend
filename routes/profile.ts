@@ -6,7 +6,7 @@ import { editarUsuario } from '../controllers/profile-controller';
 const router = express.Router();
 
 
-router.get('/', verifyToken, renovarTokenMiddleware, obtenerInfoUsuario);
+router.get('/', obtenerInfoUsuario);
 router.get('/recompensa', verifyToken, obtenerRecompensaJuego);
 router.put("/:id", editarUsuario);
 
