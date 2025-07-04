@@ -96,7 +96,7 @@ const ventasRaw = ventasRawDB.map(v => ({
 
     console.log("Enviando datos al microservicio de IA:", ventasFormateadas);
 
-    const response = await fetch("http://localhost:8000/predecir", {
+    const response = await fetch("http://172.190.203.123:8000/predecir", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ventas: ventasFormateadas, agrupacion }), // ✅ ahora sí se envía agrupación
