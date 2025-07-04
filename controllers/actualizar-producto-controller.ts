@@ -7,27 +7,31 @@ const actualizarProducto = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
 
-    // Recibe solo los campos principales que realmente se actualizan
     const {
       tipoProducto,
       nombreProducto,
       generoProducto,
-      precioProducto
+      precioProducto,
+      imagenUrl
     } = req.body;
 
-    // Crea el DTO solo con los campos necesarios
     const producto = new Producto(
       tipoProducto,
       nombreProducto,
       generoProducto,
-      0, // stockProducto
-      '', // tallaProducto
+      0,
+      '',
       precioProducto,
-      '', // colorProducto
-      ''  // imagenProducto
+      '',
+      ''
     );
 
     await ProductoServices.actualizarProducto(producto, id);
+
+    // ✅ Nueva lógica para imagen
+    if (imagenUrl && typeof imagenUrl === "string" && imagenUrl.trim() !== "") {
+      await ProductoServices.actualizarImagen(id, imagenUrl);
+    }
 
     return res.status(200).json({ message: "Producto actualizado correctamente" });
   } catch (error) {

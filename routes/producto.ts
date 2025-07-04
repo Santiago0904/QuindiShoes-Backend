@@ -6,6 +6,7 @@ import { actualizarPersonalizacionActiva } from "../controllers/actualizar-produ
 import { obtenerFacturas } from "../controllers/factura-controller";
 import {renovarTokenMiddleware, verifyToken }from "../controllers/renovar-token-controller";
 import { obtenerProductosFiltrados } from "../controllers/producto-controller";
+import { actualizarEstadoActivo } from "../controllers/producto-controller";
 import bodyParser from 'body-parser';
 const router = express.Router();
 
@@ -21,6 +22,8 @@ router.get("/public", obtenerProductos);
 router.get('/filtrados', obtenerProductosFiltrados);
 
 router.get('/facturas', obtenerFacturas);
+
+router.put('/:id/activo', renovarTokenMiddleware, actualizarEstadoActivo);
 
 
 

@@ -5,12 +5,13 @@ class ProductoRepository {
 static async registrarProducto(producto: Producto) {
   // Aquí realizarías la inserción en la tabla productos
   const result = await db.query(`
-    INSERT INTO productos (tipo_producto, nombre_producto, genero_producto, precio_producto)
-    VALUES (?, ?, ?, ?)`, [
+    INSERT INTO productos (tipo_producto, nombre_producto, genero_producto, precio_producto, activo)
+    VALUES (?, ?, ?, ?, ?)`, [
     producto.tipoProducto,
     producto.nombreProducto,
     producto.generoProducto,
-    producto.precioProducto
+    producto.precioProducto,
+    1,
   ]);
   return result;  // Retorna el producto insertado, incluyendo el id_producto
 }
@@ -47,8 +48,6 @@ static async obtenerColores() {
 }
 
 
- 
-
 static async obtenerTallas () {
   try {
     const result = await db.query('SELECT * FROM tallas');
@@ -62,8 +61,9 @@ static async obtenerTallas () {
 
 
 
-  static async obtenerTodos() {
-  // Trae productos con variantes (talla, color, stock) e imágenes
+  static async obtenerTodos(soloActivos = true) {
+  const filtroActivo = soloActivos ? "WHERE p.activo = 1" : "";
+
   const result = await db.query(`
     SELECT 
       p.id_producto,
@@ -72,8 +72,9 @@ static async obtenerTallas () {
       p.reseña_producto,
       p.genero_producto,
       p.precio_producto,
-      p.reserva_activa, -- <--- ASEGÚRATE DE INCLUIR ESTA LÍNEA
+      p.reserva_activa,
       p.personalizacion_activa,
+      p.activo,
       i.url_imagen,
       v.id_variantes,
       v.stock,
@@ -87,6 +88,7 @@ static async obtenerTallas () {
     LEFT JOIN tallas t ON v.id_talla = t.id_talla
     LEFT JOIN colores_producto c ON v.id_color = c.id_color
     LEFT JOIN imagenes i ON p.id_producto = i.id_producto
+    ${filtroActivo}
     ORDER BY p.id_producto
   `);
 
@@ -99,6 +101,7 @@ static async obtenerTallas () {
     precio_producto: number;
     reserva_activa: number | boolean; // Added this line to match the SQL SELECT
     personalizacion_activa: number | boolean; // <-- Added this line
+    activo: number | boolean; // <-- Added this line
     url_imagen: string | null;
     id_variantes: number | null;
     stock: number | null;
@@ -135,6 +138,7 @@ static async obtenerTallas () {
         precio_producto: row.precio_producto,
         reserva_activa: !!row.reserva_activa, // <-- Convierte 1/0 a true/false
         personalizacion_activa: Number(row.personalizacion_activa), // <-- fuerza a número
+        activo: !!row.activo, // <-- Convierte 1/0 a true/false
         imagenes: [],
         variantes: [],
       };
@@ -230,6 +234,8 @@ static async obtenerTodosFiltrados(filtros: any) {
       p.genero_producto,
       p.precio_producto,
       p.reserva_activa,
+      p.personalizacion_activa,
+      p.activo,
       i.url_imagen,
       v.id_variantes,
       v.stock,
@@ -255,6 +261,7 @@ static async obtenerTodosFiltrados(filtros: any) {
     genero_producto: string;
     precio_producto: number;
     reserva_activa: number | boolean;
+    activo: number | boolean;
     url_imagen: string | null;
     id_variantes: number | null;
     stock: number | null;
@@ -286,6 +293,7 @@ static async obtenerTodosFiltrados(filtros: any) {
         genero_producto: row.genero_producto,
         precio_producto: row.precio_producto,
         reserva_activa: !!row.reserva_activa,
+        activo: !!row.activo,
         imagenes: [],
         variantes: [],
       };
@@ -322,7 +330,6 @@ if (filtros.ordenar === 'nombreAsc') {
 
 return productos;
 
-  return Object.values(productosMap);
 }
 
 
@@ -394,6 +401,7 @@ static async eliminarVariante(id_variante: number) {
   );
 }
 
+
 static async actualizarReservaActiva(id_producto: number, activa: boolean) {
   const sql = 'UPDATE productos SET reserva_activa = ? WHERE id_producto = ?';
   await db.execute(sql, [activa ? 1 : 0, id_producto]); // <-- Guarda como 1 o 0
@@ -405,6 +413,44 @@ static async actualizarPersonalizacionActiva(id: number, personalizacion_activa:
   await db.execute(sql, [personalizacion_activa, id]);
 }
 
+
+static async actualizarImagen(id_producto: number, nuevaUrl: string) {
+  // Verifica si ya hay una imagen asociada
+  const [rows]: any = await db.query(
+    `SELECT id_imagen FROM imagenes WHERE id_producto = ? LIMIT 1`,
+    [id_producto]
+  );
+
+  if (rows.length > 0) {
+    // Ya existe → actualizar
+    await db.query(
+      `UPDATE imagenes SET url_imagen = ? WHERE id_producto = ?`,
+      [nuevaUrl, id_producto]
+    );
+  } else {
+    // No existe → insertar
+    await db.query(
+      `INSERT INTO imagenes (id_producto, url_imagen) VALUES (?, ?)`,
+      [id_producto, nuevaUrl]
+    );
+  }
 }
+
+static async productoTieneFacturas(id_producto: number): Promise<boolean> {
+  const [rows]: any = await db.query(`
+    SELECT 1 FROM factura_items WHERE id_producto = ? LIMIT 1
+  `, [id_producto]);
+
+  return rows.length > 0;
+}
+
+static async actualizarEstadoActivo(id_producto: number, activo: boolean) {
+  const sql = 'UPDATE productos SET activo = ? WHERE id_producto = ?';
+  await db.execute(sql, [activo ? 1 : 0, id_producto]);
+}
+
+}
+
+
 
 export default ProductoRepository;

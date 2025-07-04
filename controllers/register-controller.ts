@@ -189,8 +189,42 @@ export const eliminarEmpleado = async (req: Request, res: Response) => {
   }
 };
 
+// ⚠️ SOLO PARA PRUEBAS (no requiere confirmación)
+export const registrarDirecto = async (req: Request, res: Response) => {
+  try {
+    const { nombres, apellidos, telefono, direccion, correo, rol, contrasena } = req.body;
+
+    const usuarioExistente = await UsuarioService.EncontrarCorreo(correo);
+    if (usuarioExistente) {
+      return res.status(400).json({ error: "El correo ya está registrado." });
+    }
+
+    const hash = await generateHash(contrasena);
+
+    const usuario = new Usuario(
+      nombres,
+      apellidos,
+      telefono,
+      direccion,
+      correo,
+      rol,
+      "",         // record
+      hash        // contraseña al final
+    );
+
+    await UsuarioService.register(usuario);
+
+    return res.status(201).json({ message: "Usuario registrado directamente sin validación." });
+  } catch (error) {
+    console.error("Error en registro directo:", error);
+    return res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
+
 export default {
   register,
   confirmarCorreo,
   verificarEstadoCorreo,
+  eliminarEmpleado
 };
