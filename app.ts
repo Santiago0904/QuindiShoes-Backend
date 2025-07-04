@@ -11,13 +11,16 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-  origin: "https://quindi-shoes-project.vercel.app", // Cambia esto a tu frontend
-  credentials: true,
-  exposedHeaders: ["x-renewed-token"],
-}));
-
-
-
+    origin: "https://quindi-shoes-project.vercel.app", // Cambia esto a tu frontend
+    credentials: true,
+    exposedHeaders: ["x-renewed-token"], 
+  }));
+  
+app.use((req, res, next) => {
+  res.header("Access-Control-Expose-Headers", "x-renewed-token");
+  next();
+});
+  
 
 // Middlewares
 
@@ -42,8 +45,10 @@ import cambiarContrasenaRouter from "./routes/cambiarContrasena";
 import verificarCorreoRoute from './routes/verificarCorreo'
 import chatRoutes from "./routes/chatBot"; // ✅
 import juegoRoute from "./routes/juego"
+import metricasIA from "./routes/metricasIA"
 import enviarProductosAIRoute from "./routes/enviarProductosAI";
-// ✅
+import personalizacion from "./routes/personalizacion"; // ✅
+ // ✅
 
 import Pagos from './routes/pago-routes';
 app.use((req, res, next) => {
@@ -62,7 +67,6 @@ app.use(bodyParser.json());
 
 // import producto from "./routes/producto";
 // Usar rutas
-
 
 
 
@@ -91,6 +95,8 @@ app.use("/buscadorProducto", buscadorProductosRouter);
 app.use(verificarCorreoRoute);
 app.use('/api', chatRoutes);
 app.use("/juego", juegoRoute); // ✅
+app.use("/personalizacion", personalizacion); // ✅
+
 
 
 // ✅
@@ -101,6 +107,7 @@ app.use("/juego", juegoRoute); // ✅
 //Rutas de metricas
 import metricaRouter from "./routes/Metricas";
 app.use("/metricas", metricaRouter);
+app.use("/metricasIA/metricas", metricasIA)
 
 // Rutas de reseñas
 import resena from "./routes/resena"; // ✅
@@ -140,4 +147,20 @@ import reservaRouter from "./routes/reserva";
 app.use("/reservas", reservaRouter);
 
 import recomendadosRouter from "./routes/recomendados";
+import { Request, Response, NextFunction } from "express";
 app.use("/api/recomendados", recomendadosRouter);
+
+import pagosRoutes from "./routes/pagos";
+app.use("/api/pagos", pagosRoutes);
+
+// Manejo de errores
+interface ErrorWithStatus extends Error {
+  status?: number;
+}
+
+app.use((err: ErrorWithStatus, req: Request, res: Response, next: NextFunction) => {
+  console.error("Error no controlado:", err);
+  if (!res.headersSent) {
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+});

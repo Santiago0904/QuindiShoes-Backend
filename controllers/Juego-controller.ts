@@ -3,6 +3,7 @@ import JuegoService from "../services/ModuloJuego/JuegoService";
 
 // Guardar puntuación
 export const guardarPuntuacion = async (req: Request, res: Response) => {
+  console
   const { usuarioId, puntuacion } = req.body;
   try {
     console.log("Guardando puntuación:", usuarioId, puntuacion);

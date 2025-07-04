@@ -82,10 +82,11 @@ class UsuarioService {
         if (!datos) {
           throw new Error("Usuario no encontrado");
         }   
-
+        console.log("Datos obtenidos:", datos);
         return {
             nombre: datos.nombre,
             telefono: datos.telefono,
+            apellido: datos.apellido,
             direccion: datos.direccion,
             correo: datos.correo
           };
@@ -123,6 +124,17 @@ class UsuarioService {
   static async obtenerRecompensaJuego(id_usuario: number) {
     return await UsuarioRepository.obtenerRecompensaJuego(id_usuario);
   }
+
+  static async actualizarDatosUsuario(id: number, datos: { nombre: string, apellido: string, telefono: string, direccion: string, correo: string }) {
+  return await UsuarioRepository.actualizarDatosUsuario(id, datos);
+  }
+
+  static async obtenerEstadoDescuento(id: number) {
+    const resultado = await UsuarioRepository.obtenerEstadoDescuento(id);
+    if (!resultado) throw new Error('Usuario no encontrado');
+    return resultado.descuento_usado; // true o false
+  }
+
 }
 
 export default UsuarioService;

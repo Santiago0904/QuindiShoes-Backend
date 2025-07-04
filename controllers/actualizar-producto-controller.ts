@@ -7,27 +7,31 @@ const actualizarProducto = async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id);
 
-    // Recibe solo los campos principales que realmente se actualizan
     const {
       tipoProducto,
       nombreProducto,
       generoProducto,
-      precioProducto
+      precioProducto,
+      imagenUrl
     } = req.body;
 
-    // Crea el DTO solo con los campos necesarios
     const producto = new Producto(
       tipoProducto,
       nombreProducto,
       generoProducto,
-      0, // stockProducto
-      '', // tallaProducto
+      0,
+      '',
       precioProducto,
-      '', // colorProducto
-      ''  // imagenProducto
+      '',
+      ''
     );
 
     await ProductoServices.actualizarProducto(producto, id);
+
+    // ✅ Nueva lógica para imagen
+    if (imagenUrl && typeof imagenUrl === "string" && imagenUrl.trim() !== "") {
+      await ProductoServices.actualizarImagen(id, imagenUrl);
+    }
 
     return res.status(200).json({ message: "Producto actualizado correctamente" });
   } catch (error) {
@@ -58,6 +62,25 @@ export const actualizarReservaActiva = async (
     res.json({ mensaje: `Reserva ${activa ? 'activada' : 'desactivada'} correctamente.` });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error al actualizar la reserva.' });
+  }
+};
+
+// ejemplo de controlador
+export const actualizarPersonalizacionActiva = async (req: Request, res: Response) => {
+  try {
+    const id = req.params.id; // <-- debe existir
+    const { personalizacion_activa } = req.body; // <-- debe existir
+
+    if (typeof personalizacion_activa === "undefined" || !id) {
+      return res.status(400).json({ error: "Faltan datos" });
+    }
+
+    // Llama a tu repositorio aquí
+    await ProductoServices.actualizarPersonalizacionActiva(id, personalizacion_activa);
+
+    res.json({ message: "Personalización actualizada correctamente" });
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar personalización" });
   }
 };
 
