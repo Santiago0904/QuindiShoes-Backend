@@ -72,15 +72,16 @@ const registrarProducto = async (req: Request, res: Response) => {
   
 // ✅ ELIMINAR UN PRODUCTO
   export const eliminarProducto = async (req: Request, res: Response) => {
-    try {
-      const { id } = req.params;
-      await ProductoServices.eliminarProducto(Number(id));
-      res.status(200).json({ message: "Producto eliminado con éxito" });
-    } catch (error) {
-      console.error("Error al eliminar producto:", error);
-      res.status(500).json({ error: "Error al eliminar producto" });
-    }
-  };
+  try {
+    const { id } = req.params;
+    await ProductoServices.eliminarProducto(Number(id));
+    res.status(200).json({ message: "Producto eliminado con éxito" });
+  } catch (error: any) {
+    console.error("Error al eliminar producto:", error);
+    res.status(400).json({ error: error.message || "Error al eliminar producto" });
+  }
+};
+
 
     // ✅ OBTENER TALLAS
   export const obtenerTallas = async (_req: Request, res: Response) => {
@@ -180,6 +181,28 @@ const registrarProducto = async (req: Request, res: Response) => {
       res.status(500).json({ error: "Error al obtener productos filtrados" });
     }
   };  
+
+  export const actualizarEstadoActivo = async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const { activo } = req.body;
+
+    if (activo !== 0 && activo !== 1 && activo !== true && activo !== false) {
+      return res.status(400).json({ error: "Valor de 'activo' inválido" });
+    }
+
+    const activoBool = activo === 1 || activo === true;
+
+    await ProductoServices.actualizarEstadoActivo(id, activoBool);
+
+    res.status(200).json({ message: `Producto ${activoBool ? "activado" : "desactivado"} correctamente` });
+  } catch (error) {
+    console.error("Error al cambiar estado activo:", error);
+    res.status(500).json({ error: "Error al cambiar estado del producto" });
+  }
+};
+
+
 
 
 // ✅ EXPORTAR REGISTRO PRINCIPAL PARA RUTA
