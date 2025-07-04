@@ -215,6 +215,15 @@ class UsuarioRepository {
       await db.execute(sql, values);
     } 
 
+    static async obtenerEstadoDescuento(id_usuario: number) {
+    const [rows]: any = await db.query(
+    'SELECT descuento_usado FROM users WHERE id_usuario = ?',
+    [id_usuario]
+    );
+    return rows[0]; // Retorna { descuento_usado: true/false }
+    }
+
+
 
 }
 
