@@ -11,13 +11,13 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: "http://localhost:5173", // Cambia esto a tu frontend
-    credentials: true,
-    exposedHeaders: ["x-renewed-token"], 
-  }));
-  
+  origin: "https://quindi-shoes-project.vercel.app", // Cambia esto a tu frontend
+  credentials: true,
+  exposedHeaders: ["x-renewed-token"],
+}));
 
-  
+
+
 
 // Middlewares
 
@@ -45,7 +45,7 @@ import juegoRoute from "./routes/juego"
 import metricasIA from "./routes/metricasIA"
 import enviarProductosAIRoute from "./routes/enviarProductosAI";
 import personalizacion from "./routes/personalizacion"; // ✅
- // ✅
+// ✅
 
 import Pagos from './routes/pago-routes';
 app.use((req, res, next) => {
@@ -57,7 +57,7 @@ app.use((req, res, next) => {
 });
 
 
-app.use("/api", Pagos); 
+app.use("/api", Pagos);
 
 app.use(bodyParser.json());
 
@@ -67,7 +67,7 @@ app.use(bodyParser.json());
 
 
 
-app.use("/register", register);  
+app.use("/register", register);
 app.use("/auth", auth);
 app.use("/profile", profile);
 app.use("/RecuperarContrasena", recuperarContrasena); // // ✅
@@ -84,7 +84,7 @@ app.use("/reiniciarContrasena", reiniciarContrasena);  // ✅
 app.use("/cambiarContrasenaR", cambiarContrasenaRouter); // ✅
 app.use("/producto", productoRouter);
 app.use("/empleado", empleadoRouter);
-app.use("/carrito",carrioRouter)    
+app.use("/carrito", carrioRouter)
 app.use("/material", materialRouter);
 app.use("/color", colorRouter);
 app.use("/zonaProducto", zonaRouter);
@@ -96,7 +96,7 @@ app.use("/personalizacion", personalizacion); // ✅
 
 
 
- // ✅
+// ✅
 
 
 // pagos

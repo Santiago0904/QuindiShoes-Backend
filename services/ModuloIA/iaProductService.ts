@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PRODUCT_IA_URL = 'http://localhost:3000/process-products'; // Endpoint de la IA para productos
+const PRODUCT_IA_URL = 'https://iaquindishoes.onrender.com/process-products'; // Endpoint de la IA para productos
 
 export const sendProductsToIA = async (products: any[]) => {
   try {
